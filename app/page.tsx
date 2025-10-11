@@ -1,6 +1,5 @@
 import P2IconsCanvas from "@/components/pages/home/bento/resources/nuts-and-bolts-pile";
 
-
 export default function Page() {
   const icons = [
     { src: "/icons/gear-1.png", shape: "rect", w: 96, h: 64, scale: 1 },
