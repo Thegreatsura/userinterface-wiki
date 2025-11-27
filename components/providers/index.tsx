@@ -1,29 +1,12 @@
-import type { LenisRef } from "lenis/react";
-import { ReactLenis } from "lenis/react";
-import { cancelFrame, frame } from "motion/react";
-import React, { useEffect, useRef } from "react";
-
-const LenisProvider = () => {
-  const lenisRef = useRef<LenisRef>(null);
-
-  useEffect(() => {
-    function update(data: { timestamp: number }) {
-      const time = data.timestamp;
-      lenisRef.current?.lenis?.raf(time);
-    }
-
-    frame.update(update, true);
-
-    return () => cancelFrame(update);
-  }, []);
-
-  return <ReactLenis root options={{ autoRaf: false }} ref={lenisRef} />;
-};
+import React from "react";
+import { Lenis } from "./lenis";
+import { Vercel } from "./vercel";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <React.Fragment>
-      <LenisProvider />
+      <Lenis />
+      <Vercel />
       {children}
     </React.Fragment>
   );
