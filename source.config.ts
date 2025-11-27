@@ -9,5 +9,11 @@ export const docs = defineDocs({
 export default defineConfig({
   mdxOptions: {
     providerImportSource: "@/mdx-components",
+    rehypeCodeOptions: {
+      themes: {
+        light: "light-plus",
+        dark: "slack-dark",
+      },
+    },
   },
 });

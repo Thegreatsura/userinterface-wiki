@@ -35,7 +35,8 @@
 @supports (color: color(display-p3 1 1 1)) {
   @media (color-gamut: p3) {
     .dark,
-    .dark-theme {
+    .dark-theme,
+    [data-theme="dark"] {
       --gray-1: oklch(16.8% 0 none);
       --gray-2: oklch(21.1% 0 none);
       --gray-3: oklch(25.2% 0 none);

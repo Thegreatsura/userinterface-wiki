@@ -10,24 +10,39 @@
 
   --background-primary: var(--gray-1);
   --background-secondary: var(--gray-2);
-
   --interactive-primary: var(--gray-3);
   --interactive-secondary: var(--gray-4);
   --interactive-tertiary: var(--gray-5);
-
   --border-primary: var(--gray-6);
   --border-secondary: var(--gray-7);
   --border-tertiary: var(--gray-8);
-
   --solid-primary: var(--gray-9);
   --solid-secondary: var(--gray-10);
-
   --foreground-secondary: var(--gray-11);
   --foreground-primary: var(--gray-12);
+
+  --accent: oklch(0.6567 0.1871 237.18);
+  --color-link: var(--accent);
+
+  --font-weight-light: 300;
+  --font-weight-normal: 450;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --prose-block-spacing: 16px;
+  --prose-block-spacing-large: 22px;
+  --prose-block-spacing-small: 6px;
+  --prose-block-radius: 6px;
+  --prose-block-menu-size: 20px;
+  --prose-block-menu-offset: 28px;
+  --prose-list-inset: 24px;
+  --prose-bullet-disc-width: 8px;
+  --prose-bullet-disc-offset: 8px;
 }
 
 html,
 body {
+  font-family: var(--font-display);
   color: var(--gray-12);
   text-wrap: pretty;
   background-color: var(--gray-1);

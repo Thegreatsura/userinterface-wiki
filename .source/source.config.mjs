@@ -7,7 +7,13 @@ var docs = defineDocs({
 });
 var source_config_default = defineConfig({
   mdxOptions: {
-    providerImportSource: "@/mdx-components"
+    providerImportSource: "@/mdx-components",
+    rehypeCodeOptions: {
+      themes: {
+        light: "light-plus",
+        dark: "slack-dark"
+      }
+    }
   }
 });
 export {

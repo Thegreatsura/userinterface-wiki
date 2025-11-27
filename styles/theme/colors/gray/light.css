@@ -1,6 +1,7 @@
 :root,
 .light,
-.light-theme {
+.light-theme,
+[data-theme="light"] {
   --gray-1: #fdfdfd;
   --gray-2: #f9f9f9;
   --gray-3: #f0f0f0;
@@ -37,7 +38,8 @@
   @media (color-gamut: p3) {
     :root,
     .light,
-    .light-theme {
+    .light-theme,
+    [data-theme="light"] {
       --gray-1: oklch(99.4% 0 none);
       --gray-2: oklch(98.2% 0 none);
       --gray-3: oklch(95.6% 0 none);
