@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { fonts } from "@/lib/site/fonts";
 
 import "@/styles/index.css";
+import { Main, Root } from "@/components/layout";
 import { Providers } from "@/components/providers";
 
 export const metadata: Metadata = {
@@ -19,7 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={clsx(fonts)}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Main>
+            <Root>{children}</Root>
+          </Main>
+        </Providers>
       </body>
     </html>
   );

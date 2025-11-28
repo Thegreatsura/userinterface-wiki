@@ -11,8 +11,8 @@ export default defineConfig({
     providerImportSource: "@/mdx-components",
     rehypeCodeOptions: {
       themes: {
-        light: "light-plus",
-        dark: "slack-dark",
+        light: "github-light",
+        dark: "github-dark",
       },
     },
   },

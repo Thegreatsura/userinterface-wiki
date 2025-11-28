@@ -7,7 +7,6 @@
   --radius-medium: 8px;
   --radius-large: 12px;
   --radius-full: 128px;
-
   --background-primary: var(--gray-1);
   --background-secondary: var(--gray-2);
   --interactive-primary: var(--gray-3);
@@ -20,10 +19,8 @@
   --solid-secondary: var(--gray-10);
   --foreground-secondary: var(--gray-11);
   --foreground-primary: var(--gray-12);
-
   --accent: oklch(0.6567 0.1871 237.18);
   --color-link: var(--accent);
-
   --font-weight-light: 300;
   --font-weight-normal: 450;
   --font-weight-medium: 500;
@@ -38,6 +35,18 @@
   --prose-list-inset: 24px;
   --prose-bullet-disc-width: 8px;
   --prose-bullet-disc-offset: 8px;
+  --page-padding-inline: 24px;
+  --page-padding-block: 64px;
+  --page-padding-left: max(
+    env(safe-area-inset-left),
+    var(--page-padding-inline)
+  );
+  --page-padding-right: max(
+    env(safe-area-inset-right),
+    var(--page-padding-inline)
+  );
+  --page-max-width: 640px;
+  --prose-max-width: 640px;
 }
 
 html,
