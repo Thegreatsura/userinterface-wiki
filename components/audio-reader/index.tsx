@@ -76,7 +76,7 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
 
   useEffect(() => {
     reset();
-  }, [reset, slugKey]);
+  }, [reset]);
 
   const startTicker = useCallback(() => {
     if (rafRef.current) {
@@ -90,7 +90,7 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
     };
 
     rafRef.current = requestAnimationFrame(frame);
-  }, []);
+  }, [setCurrentTime]);
 
   const clearActiveHighlight = useCallback(() => {
     if (activeSpanRef.current) {
@@ -153,7 +153,15 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
     fetchNarration();
 
     return () => controller.abort();
-  }, [slugKey, setAudioData, setError]);
+  }, [
+    slugKey,
+    setAudioData,
+    setError,
+    setCurrentTime,
+    setDuration,
+    setIsPlaying,
+    setStatus,
+  ]);
 
   useEffect(() => {
     if (!slugKey) return;
@@ -253,7 +261,7 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
       audioRef.current = null;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [clearActiveHighlight]);
+  }, [clearActiveHighlight, setCurrentTime, setDuration, setIsPlaying]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -289,7 +297,7 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
       setError("Playback failed");
       setStatus("error");
     }
-  }, [audioUrl, isPlaying, setError, setStatus, startTicker]);
+  }, [audioUrl, isPlaying, setError, setStatus, startTicker, setIsPlaying]);
 
   const applyHighlight = useCallback(
     (wordIndex: number) => {
@@ -415,7 +423,7 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
       interactionCleanupRef.current?.();
       interactionCleanupRef.current = null;
     };
-  }, [applyHighlight, startTicker, timestamps]);
+  }, [applyHighlight, startTicker, timestamps, setCurrentTime]);
 
   if (status === "error") {
     return (

@@ -4,7 +4,7 @@ import {
   frontmatterSchema,
 } from "fumadocs-mdx/config";
 import { z } from "zod";
-import { rehypeWordSpans } from "./markdown/plugins/rehype-word-spans";
+import { rehypeProseTypePlugin, rehypeWordSpans } from "./markdown/plugins";
 
 export const docs = defineDocs({
   dir: "markdown/content",
@@ -27,7 +27,7 @@ export const docs = defineDocs({
 export default defineConfig({
   mdxOptions: {
     providerImportSource: "@/mdx-components",
-    rehypePlugins: [rehypeWordSpans],
+    rehypePlugins: [rehypeProseTypePlugin, rehypeWordSpans],
     rehypeCodeOptions: {
       themes: {
         light: "github-light",
