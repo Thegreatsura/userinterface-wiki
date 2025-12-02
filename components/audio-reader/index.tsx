@@ -1,17 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { PauseIcon } from "@/components/icons/pause";
 import { PlayIcon } from "@/components/icons/play";
 import { normalizeWord } from "@/lib/text/normalize-word";
+import { useAudioReaderStore, type WordTimestamp } from "./store";
 import styles from "./styles.module.css";
-
-interface WordTimestamp {
-  word: string;
-  start: number;
-  end: number;
-  normalized: string;
-}
 
 const HIGHLIGHT_TOLERANCE = 0.05;
 
@@ -44,17 +39,44 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
   const isUserScrollingRef = useRef(false);
   const scrollTimerRef = useRef<number | null>(null);
 
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [timestamps, setTimestamps] = useState<WordTimestamp[]>([]);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">(
-    "loading",
-  );
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-
   const prefersReducedMotion = usePrefersReducedMotion();
+  const {
+    audioUrl,
+    timestamps,
+    status,
+    errorMessage,
+    isPlaying,
+    currentTime,
+    duration,
+    setAudioData,
+    setStatus,
+    setError,
+    setIsPlaying,
+    setCurrentTime,
+    setDuration,
+    reset,
+  } = useAudioReaderStore(
+    useShallow((state) => ({
+      audioUrl: state.audioUrl,
+      timestamps: state.timestamps,
+      status: state.status,
+      errorMessage: state.errorMessage,
+      isPlaying: state.isPlaying,
+      currentTime: state.currentTime,
+      duration: state.duration,
+      setAudioData: state.setAudioData,
+      setStatus: state.setStatus,
+      setError: state.setError,
+      setIsPlaying: state.setIsPlaying,
+      setCurrentTime: state.setCurrentTime,
+      setDuration: state.setDuration,
+      reset: state.reset,
+    })),
+  );
+
+  useEffect(() => {
+    reset();
+  }, [reset, slugKey]);
 
   const startTicker = useCallback(() => {
     if (rafRef.current) {
@@ -87,13 +109,12 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
 
     const fetchNarration = async () => {
       setStatus("loading");
-      setErrorMessage(null);
+      setError(null);
       setIsPlaying(false);
       setCurrentTime(0);
       setDuration(0);
-      setAudioUrl(null);
+      setAudioData({ audioUrl: null, timestamps: [] });
       lastWordIndexRef.current = -1;
-      setTimestamps([]);
 
       try {
         const response = await fetch("/api/text-to-speech", {
@@ -114,16 +135,17 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
 
         const data = (await response.json()) as ReaderResponse;
 
-        setAudioUrl(data.audioUrl ?? null);
-        setTimestamps(data.timestamps ?? []);
+        setAudioData({
+          audioUrl: data.audioUrl ?? null,
+          timestamps: data.timestamps ?? [],
+        });
         setStatus("ready");
       } catch (error) {
         if (controller.signal.aborted) return;
         console.error("[audio-reader]", error);
-        setAudioUrl(null);
+        setAudioData({ audioUrl: null, timestamps: [] });
         setIsPlaying(false);
-        setTimestamps([]);
-        setErrorMessage("Audio unavailable right now");
+        setError("Audio unavailable right now");
         setStatus("error");
       }
     };
@@ -131,7 +153,7 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
     fetchNarration();
 
     return () => controller.abort();
-  }, [slugKey]);
+  }, [slugKey, setAudioData, setError]);
 
   useEffect(() => {
     if (!slugKey) return;
@@ -264,10 +286,10 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
       startTicker();
     } catch (error) {
       console.error("[audio-reader]", error);
-      setErrorMessage("Playback failed");
+      setError("Playback failed");
       setStatus("error");
     }
-  }, [audioUrl, isPlaying, startTicker]);
+  }, [audioUrl, isPlaying, setError, setStatus, startTicker]);
 
   const applyHighlight = useCallback(
     (wordIndex: number) => {
