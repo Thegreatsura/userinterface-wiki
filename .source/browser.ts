@@ -7,6 +7,6 @@ const create = browser<typeof Config, import("fumadocs-mdx/runtime/types").Inter
   }
 }>();
 const browserCollections = {
-  docs: create.doc("docs", {"typography.mdx": () => import("../markdown/content/typography.mdx?collection=docs"), }),
+  docs: create.doc("docs", {"the-concept-of-taste.mdx": () => import("../markdown/content/the-concept-of-taste.mdx?collection=docs"), }),
 };
 export default browserCollections;

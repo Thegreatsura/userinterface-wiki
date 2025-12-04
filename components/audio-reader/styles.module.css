@@ -10,6 +10,7 @@
   aspect-ratio: 5 / 3;
   padding: 16px;
   margin-top: var(--prose-block-spacing-large);
+  margin-bottom: calc(var(--prose-block-spacing-large) * 2);
   overflow: hidden;
   background-color: var(--background-secondary, #222);
   border-radius: 12px;

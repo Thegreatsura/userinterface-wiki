@@ -11,8 +11,27 @@ article {
   [data-word-id] {
     cursor: pointer;
 
+    &::after {
+      position: absolute;
+      inset: 0 -2px;
+      z-index: -1;
+      content: "";
+      background: transparent;
+      border-radius: 2px;
+      box-shadow: none;
+      transition: all 0.2s ease-out;
+    }
+
     &:hover {
-      background: color-mix(in srgb, #0090ff 20%, transparent);
+      &::after {
+        position: absolute;
+        inset: 0 -2px;
+        z-index: -1;
+        content: "";
+        background: color-mix(in srgb, #0090ff 20%, transparent);
+        border-radius: 2px;
+        box-shadow: none;
+      }
     }
   }
 
