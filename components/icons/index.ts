@@ -9,4 +9,5 @@ export * from "./pause";
 export * from "./picture-in-picture";
 export * from "./play";
 export * from "./rewind-15s";
+export * from "./twitter";
 export * from "./views";

@@ -10,7 +10,7 @@ const MotionBaseButton = motion.create(BaseButton);
 
 interface ButtonProps
   extends React.ComponentPropsWithoutRef<typeof MotionBaseButton> {
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "text";
   size?: "small" | "medium" | "large";
 }
 

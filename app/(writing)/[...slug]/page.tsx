@@ -1,3 +1,4 @@
+import { Footer } from "@markdown/components/footer";
 import { Header } from "@markdown/components/header";
 import { source } from "@markdown/lib/source";
 import type { Metadata } from "next";
@@ -42,6 +43,7 @@ export default async function Page(props: {
         <AudioReader slugSegments={params.slug} />
         <MDX />
       </Article>
+      <Footer page={page.data} />
     </React.Fragment>
   );
 }

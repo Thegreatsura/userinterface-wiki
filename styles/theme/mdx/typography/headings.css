@@ -11,27 +11,27 @@ article {
     margin-top: calc(var(--prose-block-spacing) * 3);
     margin-bottom: var(--prose-block-spacing);
     font-size: 20px;
-    letter-spacing: var(--font-inter-letter-spacing-22px);
+    letter-spacing: var(--font-inter-letter-spacing-20px);
   }
 
   h2[data-prose-type="heading"] {
     margin-top: calc(var(--prose-block-spacing) * 2);
     margin-bottom: var(--prose-block-spacing);
     font-size: 18px;
-    letter-spacing: var(--font-inter-letter-spacing-22px);
+    letter-spacing: var(--font-inter-letter-spacing-18px);
   }
 
   h3[data-prose-type="heading"] {
     margin-top: calc(var(--prose-block-spacing) * 1.5);
     margin-bottom: var(--prose-block-spacing-small);
     font-size: 16px;
-    letter-spacing: var(--font-inter-letter-spacing-17px);
+    letter-spacing: var(--font-inter-letter-spacing-16px);
   }
 
   h4[data-prose-type="heading"] {
     margin-top: var(--prose-block-spacing-large);
     margin-bottom: var(--prose-block-spacing-small);
     font-size: 14px;
-    letter-spacing: var(--font-inter-letter-spacing-15px);
+    letter-spacing: var(--font-inter-letter-spacing-14px);
   }
 }

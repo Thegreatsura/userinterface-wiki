@@ -13,7 +13,7 @@ article {
     z-index: 0;
     display: inline-block;
     cursor: pointer;
-    transition: color 0.16s ease-out;
+    transition: all 0.16s ease-out;
 
     &::after {
       position: absolute;
@@ -29,8 +29,10 @@ article {
         box-shadow 0.16s ease-out;
     }
 
-    &:hover::after {
-      background: color-mix(in srgb, #0090ff 20%, transparent);
+    &:hover {
+      text-shadow:
+        0 0 4px rgba(0, 144, 255, 1),
+        0 0 8px rgba(0, 144, 255, 1);
     }
   }
 
@@ -54,7 +56,9 @@ article {
   }
 
   [data-word-state="active"] {
-    text-shadow: 0 0 8px rgba(0, 144, 255);
+    text-shadow:
+      0 0 4px rgba(0, 144, 255, 1),
+      0 0 8px rgba(0, 144, 255, 1);
   }
 
   [data-word-state="inactive"] {

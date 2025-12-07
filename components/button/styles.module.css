@@ -30,4 +30,19 @@
       background-color: var(--gray-a3);
     }
   }
+
+  &[data-variant="text"] {
+    position: relative;
+    padding-inline: 0;
+    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+    color: var(--gray-10);
+    letter-spacing: var(--inter-letter-spacing-14px);
+    border-radius: 6px;
+    transition: all 0.2s;
+
+    &:hover {
+      color: var(--gray-a12);
+    }
+  }
 }
