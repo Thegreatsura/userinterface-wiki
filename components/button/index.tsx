@@ -14,12 +14,12 @@ interface ButtonProps
   size?: "small" | "medium" | "large";
 }
 
-function Button({ ...props }: ButtonProps) {
+function Button({ className, ...props }: ButtonProps) {
   return (
     <MotionBaseButton
       data-size={props.size || "medium"}
       data-variant={props.variant || "primary"}
-      className={clsx(styles.button)}
+      className={clsx(styles.button, className)}
       {...props}
     />
   );
