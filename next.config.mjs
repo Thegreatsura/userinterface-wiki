@@ -12,6 +12,7 @@ const config = {
   experimental: {
     turbopackFileSystemCacheForDev: true,
     staleTimes: { dynamic: 30, static: 180 },
+    viewTransition: true,
   },
   images: {
     formats: ["image/avif", "image/webp"],

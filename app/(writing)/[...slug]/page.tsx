@@ -1,9 +1,9 @@
+import { ViewTransition } from "react";
 import { Footer } from "@markdown/components/footer";
 import { Header } from "@markdown/components/header";
 import { source } from "@markdown/lib/source";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import React from "react";
 import { AudioReader } from "@/components/audio-reader";
 import { Article } from "@/components/layout";
 import { ViewTracker } from "@/components/view-tracker";
@@ -41,14 +41,14 @@ export default async function Page(props: {
   const views = await getViews(slugString);
 
   return (
-    <React.Fragment>
+    <ViewTransition>
       <ViewTracker slug={slugString} />
-      <Header page={page.data} views={views} />
+      <Header page={page} views={views} />
       <Article>
         <AudioReader slugSegments={params.slug} />
         <MDX />
       </Article>
-      <Footer page={page.data} />
-    </React.Fragment>
+      <Footer page={page} />
+    </ViewTransition>
   );
 }

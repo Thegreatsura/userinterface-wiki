@@ -21,7 +21,7 @@ export function Header({ page, views }: HeaderProps) {
     author: { name, avatar },
     coauthors,
     published,
-  } = getPage(page);
+  } = getPage(page.data);
 
   const formattedViews = formatViews(views);
 

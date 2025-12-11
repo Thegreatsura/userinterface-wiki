@@ -1,0 +1,37 @@
+.root {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: var(--page-max-width);
+  height: 128px;
+  padding: 0 24px;
+  transform: translateX(-50%);
+}
+
+.logo,
+.trigger {
+  font-family: var(--font-family-display);
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  line-height: 24px;
+  color: var(--gray-10);
+  letter-spacing: var(--font-inter-letter-spacing-16px);
+  transition: all 0.2s ease-in-out;
+}
+
+.logo:hover,
+.trigger:hover {
+  color: var(--gray-12);
+}
+
+.list {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  list-style: none;
+}

@@ -5,6 +5,7 @@ import { fonts } from "@/lib/site/fonts";
 
 import "@/styles/index.css";
 import { Main, Root } from "@/components/layout";
+import Navigation from "@/components/navigation";
 import { Providers } from "@/components/providers";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={clsx(fonts)}>
         <Providers>
+          <Navigation />
           <Main>
             <Root>{children}</Root>
           </Main>
