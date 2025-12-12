@@ -13,13 +13,11 @@ import {
 } from "lexical";
 import type * as React from "react";
 
-import styles from "../styles.module.css";
+import type { ChipPayload } from "./types";
 
-export interface ChipPayload {
-  type: "tag" | "author" | "before" | "after" | "during" | "sort";
-  value: string;
-  negated: boolean;
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// Serialized Node Type
+// ─────────────────────────────────────────────────────────────────────────────
 
 export type SerializedChipNode = Spread<
   {
@@ -29,6 +27,10 @@ export type SerializedChipNode = Spread<
   },
   SerializedLexicalNode
 >;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ChipNode Class
+// ─────────────────────────────────────────────────────────────────────────────
 
 export class ChipNode extends DecoratorNode<React.ReactNode> {
   __chipType: ChipPayload["type"];
@@ -60,20 +62,22 @@ export class ChipNode extends DecoratorNode<React.ReactNode> {
     this.__negated = negated;
   }
 
-  // Make the chip inline
   isInline(): boolean {
     return true;
   }
 
-  // Make the chip non-isolated so cursor can move around it
   isIsolated(): boolean {
     return false;
   }
 
   createDOM(_config: EditorConfig): HTMLElement {
     const span = document.createElement("span");
-    span.className = `${styles.chip}${this.__negated ? ` ${styles.negated}` : ""}`;
     span.setAttribute("data-lexical-chip", "true");
+    span.setAttribute("data-chip-type", this.__chipType);
+    span.setAttribute("data-chip-value", this.__value);
+    if (this.__negated) {
+      span.setAttribute("data-negated", "");
+    }
     return span;
   }
 
@@ -133,15 +137,20 @@ export class ChipNode extends DecoratorNode<React.ReactNode> {
   }
 
   decorate(): React.ReactNode {
+    // Minimal decoration - styling handled by CSS
     return (
       <>
-        {this.__negated && <span className={styles.chipnegated}>-</span>}
-        <span className={styles.chiptype}>{this.__chipType}:</span>
-        <span>{this.__value}</span>
+        {this.__negated && <span data-chip-negated-icon="">-</span>}
+        <span data-chip-type-label="">{this.__chipType}:</span>
+        <span data-chip-value-label="">{this.__value}</span>
       </>
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helper Functions
+// ─────────────────────────────────────────────────────────────────────────────
 
 export function $createChipNode(payload: ChipPayload): ChipNode {
   return $applyNodeReplacement(
