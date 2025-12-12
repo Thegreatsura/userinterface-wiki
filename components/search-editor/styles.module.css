@@ -1,8 +1,11 @@
 .editor {
   position: relative;
   flex: 1;
+  min-height: 24px;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 24px;
+  color: var(--color-text-primary, #1d1d1f);
+  caret-color: var(--color-text-primary, #1d1d1f);
   outline: none;
 }
 
@@ -10,10 +13,10 @@
   margin: 0;
 }
 
-.editor[data-placeholder]:empty::before {
-  position: absolute;
-  top: 0;
-  left: 0;
+/* Placeholder - Tiptap Placeholder extension adds this class and data attribute */
+.editor :global(.is-editor-empty):first-child::before {
+  height: 0;
+  float: left;
   color: var(--color-text-tertiary, #8e8e93);
   pointer-events: none;
   content: attr(data-placeholder);
@@ -25,17 +28,52 @@
 
 .menu {
   position: absolute;
+  top: 100%;
+  left: 0;
   z-index: 50;
-  min-width: 180px;
-  max-height: 240px;
-  padding: 4px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
   overflow-y: auto;
   background: var(--color-background-elevated, #fff);
   border: 1px solid var(--color-border, #e5e5ea);
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.08),
     0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary, #1d1d1f);
+  border-bottom: 1px solid var(--color-border, #e5e5ea);
+  margin-bottom: 8px;
+}
+
+.help {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-tertiary, #8e8e93);
+  cursor: pointer;
+  background: var(--color-background-tertiary, #f0f0f5);
+  border: none;
+  border-radius: 50%;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.help:hover {
+  color: var(--color-text-primary, #1d1d1f);
+  background: var(--color-background-hover, #e5e5ea);
 }
 
 .item {
@@ -44,12 +82,12 @@
   align-items: center;
   width: 100%;
   padding: 8px 10px;
-  font-size: 13px;
+  font-size: 14px;
   text-align: left;
   cursor: pointer;
   background: transparent;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   transition:
     background-color 200ms ease,
     color 200ms ease;
@@ -108,32 +146,27 @@
    These are applied via .editor context to scope them properly
    ───────────────────────────────────────────────────────────────────────────── */
 
+/* Wrapper for operator + value as a single tag */
 .editor [data-search-operator] {
   display: inline;
-  padding: 2px 0;
+  padding: 4px 0 4px 8px;
+  margin-left: 2px;
   font-family: var(--font-mono);
+  font-size: 13px;
   font-weight: 500;
-  color: var(--color-accent, #007aff);
+  color: var(--color-text-tertiary, #8e8e93);
+  background: var(--color-tag-background, #f0f0f5);
+  border-radius: 6px 0 0 6px;
 }
 
 .editor [data-search-value] {
   display: inline;
-  padding: 2px 6px;
-  margin: 0 2px;
+  padding: 4px 8px 4px 4px;
+  margin-right: 2px;
   font-family: var(--font-mono);
   font-size: 13px;
+  font-weight: 500;
   color: var(--color-text-primary, #1d1d1f);
   background: var(--color-tag-background, #f0f0f5);
-  border-radius: 4px;
-}
-
-.editor [data-search-value][data-valid="true"] {
-  color: var(--color-success-text, #155724);
-  background: var(--color-success-background, #d4edda);
-}
-
-.editor [data-search-value][data-negated="true"] {
-  color: var(--color-error-text, #721c24);
-  text-decoration: line-through;
-  background: var(--color-error-background, #f8d7da);
+  border-radius: 0 6px 6px 0;
 }

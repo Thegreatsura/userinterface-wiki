@@ -21,33 +21,6 @@ export interface ValueSuggestionRenderProps {
 
 export const ValueSuggestionPluginKey = new PluginKey("valueSuggestion");
 
-/**
- * Finds the operator context by looking backwards from current position
- */
-function findOperatorContext(
-  state: { doc: { nodeAt: (pos: number) => unknown } },
-  pos: number,
-): OperatorKey | null {
-  // Look backwards for an operator token
-  for (let i = pos - 1; i >= 0; i--) {
-    const node = state.doc.nodeAt(i);
-    if (
-      node &&
-      (node as { type?: { name?: string } }).type?.name === "operatorToken"
-    ) {
-      return (node as { attrs?: { key?: OperatorKey } }).attrs?.key ?? null;
-    }
-    // If we hit a value token or significant text, stop looking
-    if (
-      node &&
-      (node as { type?: { name?: string } }).type?.name === "valueToken"
-    ) {
-      return null;
-    }
-  }
-  return null;
-}
-
 export const ValueSuggestion = Extension.create<ValueSuggestionOptions>({
   name: "valueSuggestion",
 
@@ -68,25 +41,36 @@ export const ValueSuggestion = Extension.create<ValueSuggestionOptions>({
       Suggestion({
         editor: this.editor,
         pluginKey: ValueSuggestionPluginKey,
-        char: " ", // Trigger after space (following operator)
+        char: ":",
         startOfLine: false,
         allowSpaces: false,
+        allowedPrefixes: null,
 
         items: ({ query, editor }) => {
+          // Get the text before the colon to determine which operator was typed
           const state = editor.state;
-          const pos = state.selection.from;
-          const operatorContext = findOperatorContext(
-            state as unknown as {
-              doc: { nodeAt: (pos: number) => unknown };
-            },
-            pos,
-          );
+          const { from } = state.selection;
 
-          if (!operatorContext) return [];
+          // Look backwards to find the operator before the colon
+          let operatorText = "";
+          const doc = state.doc;
+          const beforePos = from - query.length - 1; // -1 for the colon
+
+          // Get text from start of line or paragraph to the colon
+          let nodeStart = 0;
+          doc.nodesBetween(0, beforePos, (node, pos) => {
+            if (node.isTextblock) {
+              nodeStart = pos + 1;
+            }
+          });
+
+          const textBefore = doc.textBetween(nodeStart, beforePos, " ");
+          const words = textBefore.trim().split(/\s+/);
+          operatorText = words[words.length - 1]?.toLowerCase() || "";
 
           const q = query.toLowerCase();
 
-          switch (operatorContext) {
+          switch (operatorText) {
             case "author":
               return authors.filter((a) => a.toLowerCase().includes(q));
             case "tag":
@@ -96,30 +80,21 @@ export const ValueSuggestion = Extension.create<ValueSuggestionOptions>({
             case "before":
             case "after":
             case "during":
-              // Return date format hints or empty for date picker
-              return [];
+              // Return date format hints
+              return ["2024", "2025", "last-week", "last-month", "last-year"].filter(
+                (d) => d.includes(q),
+              );
             default:
               return [];
           }
         },
 
         render: () => {
-          let currentOperatorContext: OperatorKey | null = null;
-
           return {
             onStart: (props) => {
-              const state = props.editor.state;
-              const pos = state.selection.from;
-              currentOperatorContext = findOperatorContext(
-                state as unknown as {
-                  doc: { nodeAt: (pos: number) => unknown };
-                },
-                pos,
-              );
-
               onRender({
                 items: props.items as string[],
-                operatorContext: currentOperatorContext,
+                operatorContext: null,
                 command: (item) => {
                   props.command({ id: item });
                 },
@@ -127,18 +102,9 @@ export const ValueSuggestion = Extension.create<ValueSuggestionOptions>({
               });
             },
             onUpdate: (props) => {
-              const state = props.editor.state;
-              const pos = state.selection.from;
-              currentOperatorContext = findOperatorContext(
-                state as unknown as {
-                  doc: { nodeAt: (pos: number) => unknown };
-                },
-                pos,
-              );
-
               onRender({
                 items: props.items as string[],
-                operatorContext: currentOperatorContext,
+                operatorContext: null,
                 command: (item) => {
                   props.command({ id: item });
                 },

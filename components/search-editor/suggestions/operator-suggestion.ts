@@ -36,16 +36,21 @@ export const OperatorSuggestion = Extension.create<OperatorSuggestionOptions>({
       Suggestion({
         editor: this.editor,
         pluginKey: OperatorSuggestionPluginKey,
-        char: "", // Trigger on any character
+        char: "",
         startOfLine: false,
         allowSpaces: false,
+        allowedPrefixes: null, // Allow suggestion after any character
 
         items: ({ query }) => {
-          const q = query.toLowerCase();
-          // Only show operators when typing a potential operator (no colon yet)
-          if (q.includes(":")) return [];
+          const text = query.toLowerCase();
 
-          return operators.filter((op) => op.toLowerCase().startsWith(q));
+          // Don't show if already has a colon (operator is complete)
+          if (text.includes(":")) return [];
+
+          // Show all operators when empty (on focus/click), or filter by query
+          if (text.length === 0) return operators;
+
+          return operators.filter((op) => op.toLowerCase().startsWith(text));
         },
 
         render: () => {

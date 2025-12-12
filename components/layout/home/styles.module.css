@@ -67,7 +67,7 @@
   box-shadow: none;
 }
 
-/* Lexical ContentEditable */
+/* Tiptap ContentEditable */
 .contenteditable {
   flex: 1;
   min-width: 0;
@@ -92,10 +92,6 @@
 .contenteditable :global(p) {
   display: inline;
   margin: 0;
-}
-
-.contenteditable :global(span[data-lexical-text="true"]) {
-  white-space: pre-wrap;
 }
 
 .wrapper {
