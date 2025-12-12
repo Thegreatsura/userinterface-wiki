@@ -1,10 +1,6 @@
 import { type LiqeQuery, parse, test } from "liqe";
 import { extractSort, normalizeQuery, type SortOption } from "./serializer";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────────────────────────────────────────
-
 export interface FilterableDocument {
   title: string;
   author?: string;
@@ -18,20 +14,11 @@ export interface FilterResult<T> {
   sort: SortOption | null;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Document Adapter
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Prepare a document for liqe filtering.
- * Ensures consistent field names and formats.
- */
 function prepareDocument<T extends FilterableDocument>(
   doc: T,
 ): Record<string, unknown> {
   const prepared: Record<string, unknown> = { ...doc };
 
-  // Normalize date to ISO string for comparison
   if (doc.date) {
     prepared.date =
       doc.date instanceof Date
@@ -39,7 +26,6 @@ function prepareDocument<T extends FilterableDocument>(
         : String(doc.date).split("T")[0];
   }
 
-  // Normalize tags to array
   if (doc.tag && !Array.isArray(doc.tag)) {
     prepared.tag = [doc.tag];
   }
@@ -47,37 +33,16 @@ function prepareDocument<T extends FilterableDocument>(
   return prepared;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Filter Function
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Filter documents using a query string.
- *
- * @example
- * const results = filterDocs(posts, "author:john tag:design");
- * // results.items = matching posts
- * // results.sort = null
- *
- * @example
- * const results = filterDocs(posts, "tag:react sort:newest");
- * // results.items = posts with tag:react
- * // results.sort = "newest"
- */
 export function filterDocs<T extends FilterableDocument>(
   docs: T[],
   query: string,
 ): FilterResult<T> {
-  // Extract sort before normalizing
   const sort = extractSort(query);
 
-  // Remove sort from query for filtering
   const filterQuery = query.replace(/sort:\S+/gi, "").trim();
 
-  // Normalize query for liqe
   const normalized = normalizeQuery(filterQuery);
 
-  // Handle empty or wildcard queries
   if (normalized === "*" || !normalized) {
     return { items: [...docs], sort };
   }
@@ -86,12 +51,10 @@ export function filterDocs<T extends FilterableDocument>(
   try {
     parsedQuery = parse(normalized);
   } catch (error) {
-    // If parsing fails, return all docs
     console.warn("Failed to parse query:", normalized, error);
     return { items: [...docs], sort };
   }
 
-  // Filter documents
   const filtered = docs.filter((doc) => {
     const prepared = prepareDocument(doc);
     try {
@@ -104,13 +67,6 @@ export function filterDocs<T extends FilterableDocument>(
   return { items: filtered, sort };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sort Function
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Sort documents by the specified sort option.
- */
 export function sortDocs<T extends FilterableDocument>(
   docs: T[],
   sort: SortOption | null,
@@ -145,13 +101,6 @@ export function sortDocs<T extends FilterableDocument>(
   return sorted;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Combined Filter & Sort
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Filter and sort documents in one call.
- */
 export function filterAndSortDocs<T extends FilterableDocument>(
   docs: T[],
   query: string,

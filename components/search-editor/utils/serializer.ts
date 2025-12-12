@@ -1,9 +1,5 @@
 import type { JSONContent } from "@tiptap/react";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────────────────────────────────────────
-
 interface OperatorTokenNode {
   type: "operatorToken";
   attrs: { key: string };
@@ -21,10 +17,6 @@ interface TextNode {
 
 type ContentNode = OperatorTokenNode | ValueTokenNode | TextNode | JSONContent;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Serializer
-// ─────────────────────────────────────────────────────────────────────────────
-
 /**
  * Serialize the Tiptap JSON document into a query string.
  *
@@ -35,7 +27,7 @@ type ContentNode = OperatorTokenNode | ValueTokenNode | TextNode | JSONContent;
  *
  * @example
  * serializeQuery(editor.getJSON())
- * // => "author:johndoe tag:design before:2024-01-01"
+ *
  */
 export function serializeQuery(doc: JSONContent): string {
   const parts: string[] = [];
@@ -49,12 +41,16 @@ export function serializeQuery(doc: JSONContent): string {
     } else if (node.type === "valueToken") {
       const valNode = node as ValueTokenNode;
       const prefix = valNode.attrs.negated ? "-" : "";
-      // Remove trailing colon from last part if present
+
+      const value = valNode.attrs.value.includes(" ")
+        ? `"${valNode.attrs.value}"`
+        : valNode.attrs.value;
+
       const lastPart = parts[parts.length - 1];
       if (lastPart?.endsWith(":")) {
-        parts[parts.length - 1] = `${prefix}${lastPart}${valNode.attrs.value}`;
+        parts[parts.length - 1] = `${prefix}${lastPart}${value}`;
       } else {
-        parts.push(valNode.attrs.value);
+        parts.push(value);
       }
     } else if (node.type === "text") {
       const textNode = node as TextNode;
@@ -73,29 +69,23 @@ export function serializeQuery(doc: JSONContent): string {
   return parts.join(" ").replace(/\s+/g, " ").trim();
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Normalizer
-// ─────────────────────────────────────────────────────────────────────────────
-
 /**
  * Normalize a query string for use with liqe.
  *
  * Transforms operator:value pairs into liqe-compatible syntax:
  * - "author:john" → "author:john"
+ * - 'author:"John Doe"' → 'author:"John Doe"'
  * - "-tag:old" → "NOT tag:old"
- * - "before:2024-01-01" → "date:<2024-01-01"
- * - "after:2024-01-01" → "date:>2024-01-01"
- * - "during:2024" → "date:>=2024-01-01 AND date:<=2024-12-31"
  * - Plain text is wrapped as a title search
  */
 export function normalizeQuery(query: string): string {
   if (!query.trim()) return "*";
 
-  const tokens = query.split(/\s+/);
+  const tokenRegex = /(-?\w+:"[^"]*"|-?\w+:\S+|\S+)/g;
+  const tokens = query.match(tokenRegex) ?? [];
   const normalized: string[] = [];
 
   for (const token of tokens) {
-    // Handle negated operators
     if (token.startsWith("-")) {
       const inner = token.slice(1);
       const colonIndex = inner.indexOf(":");
@@ -107,7 +97,6 @@ export function normalizeQuery(query: string): string {
       }
     }
 
-    // Handle regular operators
     const colonIndex = token.indexOf(":");
     if (colonIndex !== -1) {
       const op = token.slice(0, colonIndex);
@@ -118,7 +107,6 @@ export function normalizeQuery(query: string): string {
       }
     }
 
-    // Plain text → title search
     if (token) {
       normalized.push(`title:${token}`);
     }
@@ -129,35 +117,15 @@ export function normalizeQuery(query: string): string {
 
 function normalizeOperator(op: string, val: string): string {
   switch (op.toLowerCase()) {
-    case "before":
-      return `date:<${val}`;
-    case "after":
-      return `date:>${val}`;
-    case "during": {
-      // Expand "during:2024" to a date range
-      const year = Number.parseInt(val, 10);
-      if (!Number.isNaN(year)) {
-        return `(date:>=${year}-01-01 AND date:<=${year}-12-31)`;
-      }
-      return `date:${val}`;
-    }
     case "sort":
-      // Sort is handled separately, not part of filter
       return "";
     default:
       return `${op}:${val}`;
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sort Extractor
-// ─────────────────────────────────────────────────────────────────────────────
-
 export type SortOption = "newest" | "oldest" | "a-z" | "z-a";
 
-/**
- * Extract sort option from query string.
- */
 export function extractSort(query: string): SortOption | null {
   const match = query.match(/sort:(\S+)/i);
   if (!match) return null;

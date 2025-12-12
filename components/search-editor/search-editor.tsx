@@ -7,15 +7,8 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Text from "@tiptap/extension-text";
 import { EditorContent, useEditor } from "@tiptap/react";
 import * as React from "react";
-import { OperatorToken, ValueToken } from "./extensions";
+import { type OperatorKey, OperatorToken, ValueToken } from "./extensions";
 import styles from "./styles.module.css";
-import {
-  OperatorSuggestion,
-  type OperatorSuggestionRenderProps,
-  useSuggestionFloating,
-  ValueSuggestion,
-  type ValueSuggestionRenderProps,
-} from "./suggestions";
 import { serializeQuery } from "./utils/serializer";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -23,28 +16,44 @@ import { serializeQuery } from "./utils/serializer";
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface SearchEditorProps {
-  /** Available authors for autocomplete */
   authors?: string[];
-  /** Available tags for autocomplete */
   tags?: string[];
-  /** Callback when query changes */
   onQueryChange?: (query: string) => void;
-  /** Placeholder text */
   placeholder?: string;
-  /** Additional class name */
   className?: string;
-  /** Auto focus on mount */
   autoFocus?: boolean;
 }
 
-const OPERATOR_HINTS: Record<string, string> = {
-  author: "Filter by author",
-  tag: "Filter by tag",
-  before: "Before date",
-  after: "After date",
-  during: "During year",
-  sort: "Sort results",
+// ─────────────────────────────────────────────────────────────────────────────
+// Constants
+// ─────────────────────────────────────────────────────────────────────────────
+
+const OPERATORS: OperatorKey[] = ["author", "tag", "sort"];
+
+const OPERATOR_CONFIG: Record<string, { hint: string; example: string }> = {
+  tag: { hint: "Filter by tag", example: "tag:animation" },
+  author: { hint: "Filter by author", example: "author:John" },
+  sort: { hint: "Sort results", example: "sort:oldest" },
 };
+
+const SORT_OPTIONS = ["newest", "oldest", "a-z", "z-a"];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Detect if the cursor is right after a typed operator (e.g., "author:")
+ * Returns the operator key if found, null otherwise.
+ */
+function detectTypedOperator(text: string): OperatorKey | null {
+  // Match operator at end of text, e.g., "author:" or "some text tag:"
+  const match = text.match(/(?:^|\s)(author|tag|sort):$/i);
+  if (match) {
+    return match[1].toLowerCase() as OperatorKey;
+  }
+  return null;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Component
@@ -58,57 +67,11 @@ export function SearchEditor({
   className,
   autoFocus = false,
 }: SearchEditorProps) {
-  // Suggestion state
-  const [operatorSuggestion, setOperatorSuggestion] =
-    React.useState<OperatorSuggestionRenderProps | null>(null);
-  const [valueSuggestion, setValueSuggestion] =
-    React.useState<ValueSuggestionRenderProps | null>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-  const [showOperatorsOnFocus, setShowOperatorsOnFocus] = React.useState(false);
-  const [activeOperator, setActiveOperator] = React.useState<
-    "author" | "tag" | "before" | "after" | "during" | "sort" | null
-  >(null);
+  const [showMenu, setShowMenu] = React.useState(false);
+  const [activeOperator, setActiveOperator] =
+    React.useState<OperatorKey | null>(null);
   const containerRef = React.useRef<HTMLElement>(null);
-
-  // Available operators
-  const operators: Array<
-    "author" | "tag" | "before" | "after" | "during" | "sort"
-  > = ["author", "tag", "before", "after", "during", "sort"];
-
-  // Floating UI for suggestions
-  const operatorFloating = useSuggestionFloating();
-  const valueFloating = useSuggestionFloating();
-
-  // Update floating position when suggestions change
-  React.useEffect(() => {
-    if (operatorSuggestion?.clientRect) {
-      const rect = operatorSuggestion.clientRect();
-      if (rect) operatorFloating.updatePosition(rect);
-    }
-  }, [operatorSuggestion, operatorFloating]);
-
-  React.useEffect(() => {
-    if (valueSuggestion?.clientRect) {
-      const rect = valueSuggestion.clientRect();
-      if (rect) valueFloating.updatePosition(rect);
-    }
-  }, [valueSuggestion, valueFloating]);
-
-  // Previous items reference for comparison
-  const prevOperatorItems = React.useRef(operatorSuggestion?.items);
-  const prevValueItems = React.useRef(valueSuggestion?.items);
-
-  // Reset selected index when suggestions change
-  if (
-    prevOperatorItems.current !== operatorSuggestion?.items ||
-    prevValueItems.current !== valueSuggestion?.items
-  ) {
-    prevOperatorItems.current = operatorSuggestion?.items;
-    prevValueItems.current = valueSuggestion?.items;
-    if (selectedIndex !== 0) {
-      setSelectedIndex(0);
-    }
-  }
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -117,78 +80,61 @@ export function SearchEditor({
       Paragraph,
       Text,
       History,
-      Placeholder.configure({
-        placeholder,
-      }),
+      Placeholder.configure({ placeholder }),
       OperatorToken,
       ValueToken,
-      OperatorSuggestion.configure({
-        operators: ["author", "tag", "before", "after", "during", "sort"],
-        onRender: (props) => {
-          if (props.items.length > 0) {
-            setOperatorSuggestion(props);
-          } else {
-            setOperatorSuggestion(null);
-          }
-        },
-        onHide: () => setOperatorSuggestion(null),
-      }),
-      ValueSuggestion.configure({
-        authors,
-        tags,
-        sortOptions: ["newest", "oldest", "a-z", "z-a"],
-        onRender: (props) => {
-          if (props.items.length > 0) {
-            setValueSuggestion(props);
-          } else {
-            setValueSuggestion(null);
-          }
-        },
-        onHide: () => setValueSuggestion(null),
-      }),
     ],
     autofocus: autoFocus,
     editorProps: {
-      attributes: {
-        class: styles.editor,
-      },
+      attributes: { class: styles.editor },
     },
     onUpdate: ({ editor }) => {
-      const query = serializeQuery(editor.getJSON());
-      onQueryChange?.(query);
-      // Hide focus menu when user starts typing
-      if (editor.getText().length > 0) {
-        setShowOperatorsOnFocus(false);
+      const text = editor.getText();
+      onQueryChange?.(serializeQuery(editor.getJSON()));
+
+      // Detect if user just typed an operator (e.g., "author:")
+      const typedOperator = detectTypedOperator(text);
+      if (typedOperator) {
+        setActiveOperator(typedOperator);
+        setSelectedIndex(0);
+        setShowMenu(false);
+      } else if (text.length === 0) {
+        // Show menu when editor becomes empty (e.g., after backspacing)
+        setActiveOperator(null);
+        setShowMenu(true);
+        setSelectedIndex(0);
+      } else {
+        // Hide menu when typing other content
+        setShowMenu(false);
+        setActiveOperator(null);
       }
     },
     onFocus: () => {
-      // Show operators when focusing empty editor
+      // Show menu when focusing empty editor
       if (!editor?.getText().length) {
-        setShowOperatorsOnFocus(true);
+        setShowMenu(true);
+        setSelectedIndex(0);
       }
     },
     onBlur: () => {
       // Delay to allow click on menu items
       setTimeout(() => {
-        setShowOperatorsOnFocus(false);
+        setShowMenu(false);
+        setActiveOperator(null);
       }, 150);
     },
   });
 
-  // Get value suggestions based on active operator
-  const getValueSuggestions = React.useCallback(
-    (op: "author" | "tag" | "before" | "after" | "during" | "sort" | null) => {
+  // Get value options for the active operator
+  const getValueOptions = React.useCallback(
+    (op: OperatorKey | null): string[] => {
       switch (op) {
         case "author":
           return authors;
         case "tag":
           return tags;
         case "sort":
-          return ["newest", "oldest", "a-z", "z-a"];
-        case "before":
-        case "after":
-        case "during":
-          return ["2024", "2025", "last-week", "last-month", "last-year"];
+          return SORT_OPTIONS;
         default:
           return [];
       }
@@ -196,14 +142,15 @@ export function SearchEditor({
     [authors, tags],
   );
 
-  // Current value options based on active operator
-  const valueOptions = activeOperator ? getValueSuggestions(activeOperator) : [];
+  const valueOptions = getValueOptions(activeOperator);
 
-  // Handle selecting an operator from focus menu
+  // Current items to display in menu
+  const menuItems = activeOperator ? valueOptions : OPERATORS;
+
+  // Handle selecting an operator
   const handleOperatorSelect = React.useCallback(
-    (op: "author" | "tag" | "before" | "after" | "during" | "sort") => {
+    (op: OperatorKey) => {
       editor?.chain().focus().insertOperator(op).run();
-      setShowOperatorsOnFocus(false);
       setActiveOperator(op);
       setSelectedIndex(0);
     },
@@ -213,108 +160,92 @@ export function SearchEditor({
   // Handle selecting a value
   const handleValueSelect = React.useCallback(
     (value: string) => {
-      editor?.chain().focus().insertValue(value).insertContent(" ").run();
+      if (!editor || !activeOperator) return;
+
+      const text = editor.getText();
+      // Check if operator was typed (ends with "operator:")
+      const typedMatch = text.match(
+        new RegExp(`(^|\\s)(${activeOperator}):$`, "i"),
+      );
+
+      if (typedMatch) {
+        // Replace the typed operator text with tokens
+        const operatorStart = text.lastIndexOf(typedMatch[2]);
+        const operatorLength = typedMatch[2].length + 1; // +1 for colon
+
+        editor
+          .chain()
+          .focus()
+          // Delete the typed operator text
+          .deleteRange({
+            from: operatorStart + 1, // +1 because ProseMirror is 1-indexed
+            to: operatorStart + operatorLength + 1,
+          })
+          // Insert proper tokens
+          .insertOperator(activeOperator)
+          .insertValue(value)
+          .insertContent(" ")
+          .run();
+      } else {
+        // Operator was inserted as a token, just add the value
+        editor.chain().focus().insertValue(value).insertContent(" ").run();
+      }
+
       setActiveOperator(null);
+      setShowMenu(false);
     },
-    [editor],
+    [editor, activeOperator],
   );
 
-  // Keyboard navigation for suggestions
+  // Keyboard navigation
   const handleKeyDown = React.useCallback(
     (e: React.KeyboardEvent) => {
-      // Determine active items
-      const items = activeOperator
-        ? valueOptions
-        : showOperatorsOnFocus
-          ? operators
-          : operatorSuggestion?.items || [];
-
-      if (items.length === 0) return;
+      if (!showMenu && !activeOperator) return;
+      if (menuItems.length === 0) return;
 
       switch (e.key) {
         case "ArrowDown":
           e.preventDefault();
-          setSelectedIndex((i) => (i + 1) % items.length);
+          setSelectedIndex((i) => (i + 1) % menuItems.length);
           break;
         case "ArrowUp":
           e.preventDefault();
-          setSelectedIndex((i) => (i - 1 + items.length) % items.length);
+          setSelectedIndex(
+            (i) => (i - 1 + menuItems.length) % menuItems.length,
+          );
           break;
         case "Enter":
         case "Tab": {
           e.preventDefault();
-          const selectedItem = items[selectedIndex];
-          if (selectedItem) {
+          const item = menuItems[selectedIndex];
+          if (item) {
             if (activeOperator) {
-              handleValueSelect(selectedItem);
-            } else if (operatorSuggestion) {
-              operatorSuggestion.command(
-                selectedItem as "author" | "tag" | "before" | "after" | "during" | "sort",
-              );
+              handleValueSelect(item);
             } else {
-              handleOperatorSelect(
-                selectedItem as "author" | "tag" | "before" | "after" | "during" | "sort",
-              );
+              handleOperatorSelect(item as OperatorKey);
             }
           }
           break;
         }
         case "Escape":
           e.preventDefault();
-          setOperatorSuggestion(null);
-          setValueSuggestion(null);
+          setShowMenu(false);
           setActiveOperator(null);
-          setShowOperatorsOnFocus(false);
           break;
       }
     },
     [
+      showMenu,
       activeOperator,
-      valueOptions,
-      showOperatorsOnFocus,
-      operatorSuggestion,
+      menuItems,
       selectedIndex,
-      handleValueSelect,
       handleOperatorSelect,
+      handleValueSelect,
     ],
   );
 
   const hasContent = (editor?.getText().trim().length ?? 0) > 0;
-
-  // Get caret rect for positioning focus menu
-  const getCaretRect = React.useCallback(() => {
-    if (!containerRef.current) return null;
-    const editorEl = containerRef.current.querySelector(`.${styles.editor}`);
-    if (!editorEl) return null;
-    return editorEl.getBoundingClientRect();
-  }, []);
-
-  // Update floating position for focus menu
-  React.useEffect(() => {
-    if (showOperatorsOnFocus) {
-      const rect = getCaretRect();
-      if (rect) {
-        operatorFloating.updatePosition(
-          new DOMRect(rect.left, rect.bottom, 0, 0),
-        );
-      }
-    }
-  }, [showOperatorsOnFocus, getCaretRect, operatorFloating]);
-
-  // Determine which operator items to show
-  const showOperatorMenu =
-    !activeOperator &&
-    (showOperatorsOnFocus ||
-      (operatorSuggestion && operatorSuggestion.items.length > 0));
-  const operatorItems = operatorSuggestion?.items || operators;
-
-  // Determine which value items to show
-  const showValueMenu =
-    activeOperator ||
-    (valueSuggestion && valueSuggestion.items.length > 0);
-  const valueItems = activeOperator
-    ? valueOptions
-    : valueSuggestion?.items || [];
+  const isMenuOpen = showMenu || activeOperator !== null;
 
   return (
     <search
@@ -325,74 +256,73 @@ export function SearchEditor({
     >
       <EditorContent editor={editor} />
 
-      {/* Operator Suggestions - shown on focus or while typing */}
-      {showOperatorMenu && (
+      {isMenuOpen && menuItems.length > 0 && (
         <div className={styles.menu} data-suggestion-menu="">
           <div className={styles.header}>
-            <span>Search Options</span>
-            <button type="button" className={styles.help} aria-label="Help">
-              ?
-            </button>
-          </div>
-          {operatorItems.map((item, index) => (
-            <button
-              key={item}
-              type="button"
-              className={styles.item}
-              data-suggestion-item=""
-              data-selected={index === selectedIndex}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => {
-                if (operatorSuggestion) {
-                  operatorSuggestion.command(item);
-                } else {
-                  handleOperatorSelect(item);
-                }
-              }}
-            >
-              <span className={styles.operator}>{item}:</span>
-              <span className={styles.hint}>
-                {OPERATOR_HINTS[item] || `Filter by ${item}`}
+            <span className={styles.title}>
+              {activeOperator ? `Select ${activeOperator}` : "SEARCH FILTERS"}
+            </span>
+            {!activeOperator && (
+              <span className={styles.shortcuts}>
+                <kbd>↑</kbd> <kbd>↓</kbd> to navigate · <kbd>Tab</kbd> to select
+                · <kbd>Esc</kbd> to close
               </span>
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Value Suggestions */}
-      {showValueMenu && valueItems.length > 0 && (
-        <div className={styles.menu} data-suggestion-menu="">
-          <div className={styles.header}>
-            <span>Select {activeOperator || "value"}</span>
+            )}
           </div>
-          {valueItems.map((item, index) => (
-            <button
-              key={item}
-              type="button"
-              className={styles.item}
-              data-suggestion-item=""
-              data-selected={index === selectedIndex}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => {
-                if (activeOperator) {
-                  handleValueSelect(item);
-                } else if (valueSuggestion) {
-                  valueSuggestion.command(item);
-                }
-              }}
-            >
-              {item}
-            </button>
-          ))}
+          <div className={styles.items}>
+            {menuItems.map((item, index) => (
+              <button
+                key={item}
+                type="button"
+                className={styles.item}
+                data-suggestion-item=""
+                data-selected={index === selectedIndex}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  if (activeOperator) {
+                    handleValueSelect(item);
+                  } else {
+                    handleOperatorSelect(item as OperatorKey);
+                  }
+                }}
+              >
+                {activeOperator ? (
+                  item
+                ) : (
+                  <>
+                    <span className={styles.left}>
+                      <span className={styles.operator}>{item}:</span>
+                      <span className={styles.hint}>
+                        {OPERATOR_CONFIG[item as OperatorKey]?.hint}
+                      </span>
+                    </span>
+                    <span className={styles.example}>
+                      {OPERATOR_CONFIG[item as OperatorKey]?.example}
+                    </span>
+                  </>
+                )}
+              </button>
+            ))}
+          </div>
+          {!activeOperator && (
+            <div className={styles.footer}>
+              Use <code>-</code> to exclude: <code>-tag:draft</code> · Quotes
+              for spaces: <code>author:"John Doe"</code>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Clear button */}
       {hasContent && (
         <button
           type="button"
           className={styles.clear}
-          onClick={() => editor?.commands.clearContent()}
+          onClick={() => {
+            editor?.commands.clearContent();
+            setActiveOperator(null);
+            setShowMenu(true);
+            setSelectedIndex(0);
+          }}
           aria-label="Clear search"
         >
           ×
