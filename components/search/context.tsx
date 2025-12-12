@@ -184,7 +184,7 @@ export function SearchProvider({
           $isTextNode,
           $createTextNode,
         } = require("lexical");
-        const { $createChipNode } = require("./lexical/chip-node");
+        const { $createChipNode } = require("./chip-node");
 
         const selection = $getSelection();
         if (!$isRangeSelection(selection)) return;
@@ -312,7 +312,7 @@ function useFilteredPages({
       matchesQuery,
       parseSearchQuery,
       sortPages,
-    } = require("@/lib/search");
+    } = require("@/components/search/parser");
 
     // Build query from chips + text
     const inputQuery = parseSearchQuery(textContent);
