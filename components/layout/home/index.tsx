@@ -1,15 +1,10 @@
 import { Suspense } from "react";
-
+import { Search, type SerializedPage } from "@/components/layout/home/search";
 import { PageTransition } from "@/components/page-transition";
-import { HomeSearch, type SerializedPage } from "@/components/search-editor";
 import { getFormattedPageFromPageSource } from "@/markdown/functions/get-page";
 import { source } from "@/markdown/lib/source";
+import styles from "./index.module.css";
 
-import styles from "./styles.module.css";
-
-/**
- * Serializes page data for client-side filtering.
- */
 function serializePages(): SerializedPage[] {
   const pages = source.getPages();
 
@@ -30,9 +25,6 @@ function serializePages(): SerializedPage[] {
   });
 }
 
-/**
- * Extracts unique tags from pages, sorted alphabetically.
- */
 function extractUniqueTags(pages: SerializedPage[]): string[] {
   const tagSet = new Set<string>();
   for (const page of pages) {
@@ -44,8 +36,8 @@ function extractUniqueTags(pages: SerializedPage[]): string[] {
 }
 
 export function HomeLayout() {
-  const serializedPages = serializePages();
-  const allTags = extractUniqueTags(serializedPages);
+  const pages = serializePages();
+  const tags = extractUniqueTags(pages);
 
   return (
     <PageTransition>
@@ -55,7 +47,7 @@ export function HomeLayout() {
 
       <div className={styles.container}>
         <Suspense fallback={null}>
-          <HomeSearch pages={serializedPages} allTags={allTags} />
+          <Search pages={pages} tags={tags} />
         </Suspense>
       </div>
     </PageTransition>

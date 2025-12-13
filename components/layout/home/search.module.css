@@ -12,7 +12,7 @@
   align-items: center;
   padding: 12px 16px;
   background: var(--color-background-secondary, #f5f5f7);
-  border: 1px solid var(--color-border, #e5e5ea);
+  border: 1px solid var(--gray-4);
   border-radius: 12px;
   transition:
     border-color 200ms ease,
@@ -24,10 +24,6 @@
   box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Results
-   ───────────────────────────────────────────────────────────────────────────── */
-
 .results {
   min-height: 200px;
 }
@@ -38,7 +34,7 @@
   justify-content: center;
   padding: 48px 24px;
   font-size: 14px;
-  color: var(--color-text-tertiary, #8e8e93);
+  color: var(--gray-10);
 }
 
 .list {
@@ -52,7 +48,7 @@
 
 .item {
   background: var(--color-background, #fff);
-  border: 1px solid var(--color-border, #e5e5ea);
+  border: 1px solid var(--gray-4);
   border-radius: 12px;
   transition:
     border-color 200ms ease,
@@ -76,7 +72,7 @@
 .title {
   font-size: 16px;
   font-weight: 600;
-  color: var(--color-text-primary, #1d1d1f);
+  color: var(--gray-12);
 }
 
 .description {
@@ -87,7 +83,7 @@
   line-clamp: 2;
   font-size: 14px;
   line-height: 1.5;
-  color: var(--color-text-secondary, #6e6e73);
+  color: var(--gray-11);
 }
 
 .meta {
@@ -98,7 +94,7 @@
 }
 
 .author {
-  color: var(--color-text-tertiary, #8e8e93);
+  color: var(--gray-10);
 }
 
 .tags {
@@ -111,7 +107,7 @@
   padding: 2px 8px;
   font-size: 11px;
   font-weight: 500;
-  color: var(--color-text-secondary, #6e6e73);
+  color: var(--gray-11);
   background: var(--color-tag-background, #f0f0f5);
   border-radius: 4px;
 }

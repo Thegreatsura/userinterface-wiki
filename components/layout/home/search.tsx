@@ -1,13 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { SearchEditor } from "../search-editor";
-import { type FilterableDocument, filterAndSortDocs } from "../utils";
-import styles from "./styles.module.css";
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────────────────────────────────────────
+import { SearchEditor } from "../../search-editor";
+import {
+  type FilterableDocument,
+  filterAndSortDocs,
+} from "../../search-editor/utils";
+import styles from "./search.module.css";
 
 export interface SerializedPage {
   url: string;
@@ -22,14 +21,10 @@ export interface SerializedPage {
   };
 }
 
-export interface HomeSearchProps {
+export interface SearchProps {
   pages: SerializedPage[];
-  allTags: string[];
+  tags: string[];
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Adapter
-// ─────────────────────────────────────────────────────────────────────────────
 
 function toFilterable(page: SerializedPage): FilterableDocument {
   return {
@@ -37,20 +32,14 @@ function toFilterable(page: SerializedPage): FilterableDocument {
     author: page.author.name,
     tag: page.tags,
     date: page.date.published,
-    // Pass through extra fields
     url: page.url,
     description: page.description,
   };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Component
-// ─────────────────────────────────────────────────────────────────────────────
-
-export function HomeSearch({ pages, allTags }: HomeSearchProps) {
+export function Search({ pages, tags }: SearchProps) {
   const [query, setQuery] = React.useState("");
 
-  // Extract unique authors
   const authors = React.useMemo(() => {
     const authorSet = new Set<string>();
     for (const page of pages) {
@@ -61,14 +50,13 @@ export function HomeSearch({ pages, allTags }: HomeSearchProps) {
     return Array.from(authorSet).sort();
   }, [pages]);
 
-  // Filter pages based on query
   const filteredPages = React.useMemo(() => {
     if (!query.trim()) {
       return pages;
     }
     const filterableDocs = pages.map(toFilterable);
     const results = filterAndSortDocs(filterableDocs, query);
-    // Map back to original pages
+
     return results
       .map((doc) => pages.find((p) => p.url === doc.url))
       .filter((p): p is SerializedPage => p !== undefined);
@@ -78,7 +66,7 @@ export function HomeSearch({ pages, allTags }: HomeSearchProps) {
     <div className={styles.container}>
       <SearchEditor
         authors={authors}
-        tags={allTags}
+        tags={tags}
         onQueryChange={setQuery}
         placeholder="Search articles…"
         className={styles.editor}
