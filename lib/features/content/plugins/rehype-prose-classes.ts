@@ -13,6 +13,9 @@ const TYPE_MAP: Record<string, string> = {
   li: "text",
   ul: "list",
   ol: "list",
+  figure: "figure",
+  figcaption: "figcaption",
+  preview: "preview",
 };
 
 const DEFAULT_TYPE = "block";
