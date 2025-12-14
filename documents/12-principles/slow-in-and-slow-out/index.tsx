@@ -46,7 +46,7 @@ const Visualization = ({ ease, name }: VisualizationProps) => {
             viewBox="0 0 100 100"
             className={styles.curveSvg}
           >
-            <title>{name} easing curve visualization</title>
+            <title>Easing Curve Visualization</title>
             <defs>
               <pattern
                 id={`grid-${name}`}

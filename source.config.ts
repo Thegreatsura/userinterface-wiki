@@ -4,10 +4,7 @@ import {
   frontmatterSchema,
 } from "fumadocs-mdx/config";
 import { z } from "zod";
-import {
-  rehypeProseTypePlugin,
-  rehypeWordSpans,
-} from "@/lib/features/content/plugins";
+import { rehypeWordSpans } from "@/lib/features/content/plugins";
 
 export const docs = defineDocs({
   dir: "documents",
@@ -29,7 +26,7 @@ export const docs = defineDocs({
 export default defineConfig({
   mdxOptions: {
     providerImportSource: "@/mdx-components",
-    rehypePlugins: [rehypeProseTypePlugin, rehypeWordSpans],
+    rehypePlugins: [rehypeWordSpans],
     rehypeCodeOptions: {
       themes: {
         light: "github-light",

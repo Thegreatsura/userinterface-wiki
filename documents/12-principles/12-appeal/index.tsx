@@ -3,7 +3,6 @@
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import * as Media from "@/components/media";
 import styles from "./styles.module.css";
 
 export function Appeal() {

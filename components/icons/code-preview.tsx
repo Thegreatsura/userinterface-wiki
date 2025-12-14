@@ -1,11 +1,11 @@
 import type { IconProps } from "./types";
 
-export const Code = ({ ...props }: IconProps) => {
+export const CodePreviewIcon = ({ size = 40, ...props }: IconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="40"
-      height="50"
+      width={size}
+      height={Number(size) * 1.25}
       fill="none"
       {...props}
     >

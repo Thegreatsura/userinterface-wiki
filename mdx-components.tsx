@@ -1,10 +1,23 @@
 import type { MDXComponents } from "mdx/types";
 import { Principles } from "@/documents/12-principles";
+import { Caption, Figure } from "./components/figure";
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
-    ...Principles,
     ...components,
+    h1: (props) => <h1 data-prose-type="heading" {...props} />,
+    h2: (props) => <h2 data-prose-type="heading" {...props} />,
+    h3: (props) => <h3 data-prose-type="heading" {...props} />,
+    h4: (props) => <h4 data-prose-type="heading" {...props} />,
+    h5: (props) => <h5 data-prose-type="heading" {...props} />,
+    h6: (props) => <h6 data-prose-type="heading" {...props} />,
+    p: (props) => <p data-prose-type="text" {...props} />,
+    li: (props) => <li data-prose-type="text" {...props} />,
+    ul: (props) => <ul data-prose-type="list" {...props} />,
+    ol: (props) => <ol data-prose-type="list" {...props} />,
+    Figure,
+    Caption,
+    ...Principles,
   };
 }
 

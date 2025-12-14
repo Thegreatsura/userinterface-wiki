@@ -4,8 +4,8 @@ import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { Article } from "@/components/layout";
 import { PageTransition } from "@/components/page-transition";
-import { ViewTracker } from "@/components/view-tracker";
 import { source } from "@/lib/features/content";
+import { getMDXComponents } from "@/mdx-components";
 
 export async function generateStaticParams() {
   return source.generateParams();
@@ -35,18 +35,16 @@ export default async function Page(props: {
   if (!page) notFound();
 
   const MDX = page.data.body;
-  const slugString = params.slug.join("/");
 
   return (
     <PageTransition>
-      <ViewTracker slug={slugString} />
       <Header page={page} />
       <Article>
         {/* <AudioReader slugSegments={params.slug} />
          */}
-        <MDX />
+        <MDX components={getMDXComponents()} />
       </Article>
-      <Footer page={page} />
+      <Footer />
     </PageTransition>
   );
 }

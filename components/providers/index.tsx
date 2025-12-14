@@ -10,7 +10,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type React from "react";
 import { useEffect, useRef } from "react";
 
-const LenisProvider = () => {
+const _LenisProvider = () => {
   const lenisRef = useRef<LenisRef>(null);
 
   useEffect(() => {

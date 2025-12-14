@@ -26,9 +26,6 @@
     "enabled": true,
     "rules": {
       "recommended": true,
-      "nursery": {
-        "noImportantInKeyframe": "off"
-      },
       "suspicious": {
         "noImportantInKeyframe": "off"
       }
