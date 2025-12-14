@@ -53,7 +53,7 @@
 
 .hint {
   font-size: 12px;
-  font-variation-settings: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
   color: var(--gray-9);
   letter-spacing: var(--font-inter-letter-spacing-12px);
 }

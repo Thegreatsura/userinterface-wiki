@@ -1,0 +1,83 @@
+.container {
+  --color-foreground: var(--white-a12);
+  --color-background: var(--green-9);
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  outline: none;
+  background: var(--color-background);
+  border-radius: 100px;
+  will-change: all;
+}
+
+.button[data-state="loading"] {
+  animation: pulse 1s infinite;
+}
+
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  padding: 8px 16px;
+  white-space: nowrap;
+  will-change: all;
+}
+
+.label {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-foreground);
+  white-space: nowrap;
+  will-change: all;
+}
+
+.spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  transform: rotate(360deg);
+  animation: spin 1s linear infinite;
+  will-change: all;
+}
+
+.spinner .svg {
+  position: relative;
+  display: block;
+  color: var(--color-foreground);
+  animation: spin 1s ease-in-out infinite;
+  will-change: all;
+}
+
+.check {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  color: var(--color-foreground);
+  will-change: all;
+}
+
+.check .svg {
+  position: absolute;
+  scale: 1.2;
+  will-change: all;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

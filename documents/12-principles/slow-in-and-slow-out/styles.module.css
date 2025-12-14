@@ -82,7 +82,7 @@
 
 .easeName {
   font-size: 12px;
-  font-variation-settings: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
   line-height: 1.2;
   color: var(--gray-11);
   text-align: center;

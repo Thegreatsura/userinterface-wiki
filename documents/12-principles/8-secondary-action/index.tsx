@@ -1,6 +1,6 @@
 "use client";
 
-import { MotionConfig, motion } from "motion/react";
+import { type HTMLMotionProps, MotionConfig, motion } from "motion/react";
 import { useState } from "react";
 import useMeasure from "react-use-measure";
 import styles from "./styles.module.css";
@@ -25,29 +25,33 @@ export function SecondaryAction() {
     setState((prev) => nextStateMap[prev]);
   }
 
+  const show = (conditional: boolean): HTMLMotionProps<"span"> => ({
+    className: styles.label,
+    initial: false,
+    animate: {
+      opacity: conditional ? 1 : 0,
+      width: conditional ? "auto" : 0,
+    },
+    style: {
+      overflow: "hidden",
+      display: "inline-flex",
+      justifyContent: "flex-start",
+    },
+  });
+
+  const isLoading = state === State.Loading;
+  const isSuccess = state === State.Success;
+  const isIdle = state === State.Idle;
+
   return (
     <div className={styles.container}>
       <MotionConfig
         transition={{
-          scale: {
-            duration: 0.5,
-            type: "spring",
-            bounce: 0.3,
-          },
-          default: {
-            ease: [0.19, 1, 0.22, 1],
-            duration: 0.4,
-          },
+          duration: 0.2,
+          ease: [0.25, 1, 0.5, 1],
         }}
       >
         <motion.button
-          layout
-          initial={false}
-          whileTap={{ scale: 0.95 }}
-          whileHover={{ scale: 1.05 }}
-          transformTemplate={(_latest, generated) =>
-            `translate(-50%, -50%) ${generated}`
-          }
           animate={{
             width: bounds.width > 10 ? bounds.width : "auto",
           }}
@@ -55,97 +59,40 @@ export function SecondaryAction() {
           data-state={state.toLowerCase()}
           className={styles.button}
         >
-          <div
-            ref={ref}
-            style={{
-              whiteSpace: "nowrap",
-              width: "fit-content",
-              position: "relative",
-            }}
-            className={styles.inner}
-          >
+          <div ref={ref} className={styles.wrapper}>
             <motion.div
               key="success"
-              layout="position"
               initial={false}
               animate={{
-                opacity: state === State.Success ? 1 : 0,
-                scale: state === State.Success ? 1 : 0,
+                opacity: isSuccess ? 1 : 0,
+                width: isSuccess ? 26 : 0,
+                scale: isSuccess ? 1 : 0,
               }}
               className={styles.icon}
-              style={{
-                width: state === State.Success ? "auto" : 0,
-                marginRight: state === State.Success ? 8 : 0,
-              }}
             >
               <Check />
             </motion.div>
 
             <motion.div
               key="loading"
-              layout="position"
               initial={false}
               animate={{
-                opacity: state === State.Loading ? 1 : 0,
-                scale: state === State.Loading ? 1 : 0,
+                opacity: isLoading ? 1 : 0,
+                width: isLoading ? 26 : 0,
+                scale: isLoading ? 1 : 0,
               }}
               className={styles.icon}
-              style={{
-                width: state === State.Loading ? "auto" : 0,
-                marginRight: state === State.Loading ? 8 : 0,
-              }}
             >
               <Spinner />
             </motion.div>
 
-            <motion.span
-              layout="position"
-              initial={false}
-              animate={{
-                opacity:
-                  state === State.Loading || state === State.Idle ? 1 : 0,
-              }}
-              className={styles.label}
-              style={{
-                width:
-                  state === State.Loading || state === State.Idle ? "auto" : 0,
-              }}
-            >
-              Run
-            </motion.span>
-            <motion.span
-              layout="position"
-              initial={false}
-              animate={{
-                opacity: state === State.Loading ? 1 : 0,
-              }}
-              className={styles.label}
-              style={{
-                width: state === State.Loading ? "auto" : 0,
-              }}
-            >
-              ning
-            </motion.span>
-            <motion.span
-              layout="position"
-              initial={false}
-              className={styles.label}
-            >
-              {state !== State.Success && <>&nbsp;</>}
-              Simulation
-            </motion.span>
-            <motion.span
-              layout="position"
-              initial={false}
-              animate={{
-                opacity: state === State.Success ? 1 : 0,
-              }}
-              className={styles.label}
-              style={{
-                width: state === State.Success ? "auto" : 0,
-              }}
-            >
-              &nbsp;Done!
+            <motion.span {...show(isLoading)}>Running&nbsp;</motion.span>
+            <motion.span {...show(true)}>Back</motion.span>
+            <motion.span {...show(isSuccess)}>ed</motion.span>
+            <motion.span {...show(true)}>&nbsp;Up</motion.span>
+            <motion.span {...show(isIdle)}>
+              {!isSuccess && <>&nbsp;</>}
+              Now
             </motion.span>
           </div>
         </motion.button>
@@ -167,7 +114,7 @@ const Check = () => (
         fillRule="evenodd"
         clipRule="evenodd"
         d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM15.774 10.1333C16.1237 9.70582 16.0607 9.0758 15.6332 8.72607C15.2058 8.37635 14.5758 8.43935 14.226 8.86679L10.4258 13.5116L9.20711 12.2929C8.81658 11.9024 8.18342 11.9024 7.79289 12.2929C7.40237 12.6834 7.40237 13.3166 7.79289 13.7071L9.79289 15.7071C9.99267 15.9069 10.2676 16.0129 10.5498 15.9988C10.832 15.9847 11.095 15.8519 11.274 15.6333L15.774 10.1333Z"
-        fill="var(--white-a12)"
+        fill="currentColor"
       />
     </svg>
   </motion.div>
@@ -207,13 +154,13 @@ const Spinner = () => (
         cx="9"
         cy="9"
         r="7"
-        stroke="var(--white-a12)"
+        stroke="currentColor"
         strokeOpacity="0.2"
         strokeWidth="2.5"
       />
       <path
         d="M16 9C16 5.13401 12.866 2 9 2"
-        stroke="var(--white-a12)"
+        stroke="currentColor"
         strokeWidth="2.5"
         strokeLinecap="round"
       />

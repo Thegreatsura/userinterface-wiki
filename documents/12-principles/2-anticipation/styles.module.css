@@ -24,7 +24,7 @@
 
 .header-title {
   font-size: 13px;
-  font-variation-settings: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
   color: var(--gray-12);
   text-align: left;
   white-space: nowrap;
@@ -125,7 +125,7 @@
 
 .id {
   font-size: 13px;
-  font-variation-settings: var(--font-weight-normal);
+  font-weight: var(--font-weight-normal);
   font-variant-numeric: tabular-nums;
   color: var(--gray-10);
   text-align: left;
@@ -134,7 +134,7 @@
 
 .title {
   font-size: 13px;
-  font-variation-settings: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
   color: var(--gray-12);
   text-align: left;
 }
@@ -165,7 +165,7 @@
 
 .date {
   font-size: 12px;
-  font-variation-settings: var(--font-weight-normal);
+  font-weight: var(--font-weight-normal);
   color: var(--gray-10);
   white-space: nowrap;
 
@@ -198,14 +198,14 @@
   width: 16px;
   height: 16px;
   margin-left: 6px;
-  font-variation-settings: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
   fill: var(--gray-10);
 }
 
 .selected {
   margin-right: 24px;
   font-size: 13px;
-  font-variation-settings: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
   color: var(--gray-10);
   text-align: left;
   white-space: nowrap;
@@ -220,7 +220,7 @@
   padding: 0px 12px;
   overflow: hidden;
   font-size: 13px;
-  font-variation-settings: var(--font-weight-600);
+  font-weight: var(--font-weight-600);
   user-select: none;
   border: none;
   border-radius: 100px;

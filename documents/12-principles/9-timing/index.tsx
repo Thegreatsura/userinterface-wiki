@@ -3,13 +3,20 @@
 import { Popover } from "@base-ui-components/react/popover";
 import chroma from "chroma-js";
 import { getNearestPantone } from "pantone-tcx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./styles.module.css";
+
+const DEFAULT_HEX = "#5A5B9F";
 
 export function Timing() {
   const [isSnappy, setIsSnappy] = useState(true);
+  const [colorHex, setColorHex] = useState(DEFAULT_HEX);
 
-  const pantone = getNearestPantone(chroma.random().hex());
+  useEffect(() => {
+    setColorHex(chroma.random().hex());
+  }, []);
+
+  const pantone = getNearestPantone(colorHex);
 
   const hex = chroma(pantone.hex).hex().toUpperCase();
   const hsl = chroma(pantone.hex)

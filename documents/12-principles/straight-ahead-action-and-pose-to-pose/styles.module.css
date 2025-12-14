@@ -28,7 +28,7 @@
     top: -40px;
     left: 50%;
     font-size: 12px;
-    font-variation-settings: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
     color: var(--gray-8);
     white-space: nowrap;
     content: attr(data-caption);
