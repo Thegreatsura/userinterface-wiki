@@ -34,7 +34,9 @@ export function SolidDrawing() {
             fill="var(--background)"
             stroke="var(--orbit-ring)"
             strokeWidth="6"
-            initial={{ strokeDasharray: "2 4.09" }}
+            initial={{
+              strokeDasharray: "2 4.09",
+            }}
             animate={{
               rotate: isPlaying ? [0, 360] : 0,
               strokeDasharray: paused ? "2 0" : "2 4.09",
@@ -55,12 +57,18 @@ export function SolidDrawing() {
             cx="64"
             cy="64"
             r="16"
-            initial={{ scale: 0, fill: "var(--background)" }}
+            initial={{
+              scale: 0,
+              fill: "var(--background)",
+            }}
             animate={{
               scale: paused ? 1 : 0,
               fill: paused ? "var(--accent)" : "var(--background)",
             }}
-            transition={{ duration: 0.4, ease: EASING.inOutCubic }}
+            transition={{
+              duration: 0.4,
+              ease: EASING.inOutCubic,
+            }}
           />
         </motion.svg>
 
@@ -86,7 +94,10 @@ export function SolidDrawing() {
           }
           transition={
             paused
-              ? { ease: EASING.outExpo, duration: 3 }
+              ? {
+                  ease: EASING.outExpo,
+                  duration: 3,
+                }
               : {
                   repeat: Number.POSITIVE_INFINITY,
                   ease: "linear",
@@ -97,16 +108,26 @@ export function SolidDrawing() {
           <div className={styles.bg} />
           <motion.div
             className={styles.mg}
-            style={{ transform: "translate(-50%, -50%)" }}
+            style={{
+              transform: "translate(-50%, -50%)",
+            }}
             animate={{
               background: paused ? "var(--orbit-complete)" : "var(--accent)",
             }}
           />
           <motion.div
             className={styles.fg}
-            style={{ transform: "translate(-50%, -50%)" }}
-            animate={{ width: paused ? 0 : 8, height: paused ? 0 : 8 }}
-            transition={{ duration: 0.4, ease: EASING.inOutCubic }}
+            style={{
+              transform: "translate(-50%, -50%)",
+            }}
+            animate={{
+              width: paused ? 0 : 8,
+              height: paused ? 0 : 8,
+            }}
+            transition={{
+              duration: 0.4,
+              ease: EASING.inOutCubic,
+            }}
           />
         </motion.div>
       </div>
