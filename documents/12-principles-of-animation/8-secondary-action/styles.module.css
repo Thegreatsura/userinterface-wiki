@@ -1,6 +1,6 @@
 .container {
   --color-foreground: var(--white-a12);
-  --color-background: var(--green-9);
+  --color-background: var(--sky-9);
   position: relative;
   display: flex;
   align-items: center;

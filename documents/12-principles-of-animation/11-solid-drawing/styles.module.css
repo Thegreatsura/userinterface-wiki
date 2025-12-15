@@ -1,8 +1,8 @@
-.container {
+.solid-drawing {
   --accent: var(--pink-9);
-  --orbit-ring: color-mix(in srgb, var(--pink-9) 20%, transparent);
-  --orbit-complete: var(--sky-9);
-  --background: var(--gray-1);
+  --accent-muted: color-mix(in srgb, var(--pink-9) 20%, transparent);
+  --complete: var(--sky-9);
+  --surface: var(--gray-1);
 
   position: relative;
   display: flex;
@@ -10,78 +10,69 @@
   justify-content: center;
   width: 100%;
   height: 384px;
-  background: var(--background);
+  background: var(--surface);
 }
 
-.wrapper {
+.globe-scene {
   rotate: -45deg;
   transform-style: preserve-3d;
   perspective: 100px;
   position: relative;
 }
 
-.globe {
+.globe-svg {
   width: 128px;
   height: 128px;
 }
 
-.orbit {
+.orbit-marker {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 24px;
   height: 24px;
-  background: var(--gray-1);
+  background: var(--surface);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition: all 10s ease-in-out;
 }
 
-.bg,
-.mg,
-.fg {
+.orbit-layer-back,
+.orbit-layer-middle,
+.orbit-layer-front {
   position: absolute;
   top: 50%;
   left: 50%;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition: all 0.4s ease-in-out;
+  transition: background 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
-.bg {
+.orbit-layer-back {
   z-index: 1;
   width: 24px;
   height: 24px;
-  background: var(--gray-1);
+  background: var(--surface);
 }
 
-.mg {
+.orbit-layer-middle {
   z-index: 2;
   width: 16px;
   height: 16px;
-  background: var(--green-4);
+  background: var(--accent);
 }
 
-.fg {
+.orbit-layer-front {
   z-index: 3;
   width: 8px;
   height: 8px;
-  background: var(--gray-1);
+  background: var(--surface);
 }
 
-.orbit[data-loaded="true"] .bg {
-  background: var(--gray-1);
+.orbit-marker[data-paused="true"] .orbit-layer-middle {
+  background: var(--complete);
 }
 
-.orbit[data-loaded="true"] .mg {
-  background: var(--purple-a4);
-}
-
-.orbit[data-loaded="true"] .fg {
-  background: var(--gray-1);
-}
-
-.button {
+.toggle-button {
   position: absolute;
   bottom: 24px;
   left: 50%;
@@ -100,7 +91,7 @@
   transition: all 0.2s ease;
 }
 
-.button::before {
+.toggle-button::before {
   position: absolute;
   top: 0;
   left: 0;
@@ -115,15 +106,15 @@
   transition: all 0.2s ease;
 }
 
-.button:hover {
+.toggle-button:hover {
   color: var(--gray-12);
 }
 
-.button:hover::before {
+.toggle-button:hover::before {
   opacity: 1;
   scale: 1;
 }
 
-.button:active {
+.toggle-button:active {
   scale: 0.99;
 }

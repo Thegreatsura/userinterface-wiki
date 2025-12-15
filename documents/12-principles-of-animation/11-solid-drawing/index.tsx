@@ -22,17 +22,17 @@ export function SolidDrawing() {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.wrapper}>
-        <motion.svg viewBox="0 0 128 128" className={styles.globe}>
+    <div className={styles["solid-drawing"]}>
+      <div className={styles["globe-scene"]}>
+        <motion.svg viewBox="0 0 128 128" className={styles["globe-svg"]}>
           <title>Globe</title>
-          <circle cx="64" cy="64" r="36" fill="var(--background)" />
+          <circle cx="64" cy="64" r="36" fill="var(--surface)" />
           <motion.circle
             cx="64"
             cy="64"
             r="26"
-            fill="var(--background)"
-            stroke="var(--orbit-ring)"
+            fill="var(--surface)"
+            stroke="var(--accent-muted)"
             strokeWidth="6"
             initial={{
               strokeDasharray: "2 4.09",
@@ -57,14 +57,9 @@ export function SolidDrawing() {
             cx="64"
             cy="64"
             r="16"
-            initial={{
-              scale: 0,
-              fill: "var(--background)",
-            }}
-            animate={{
-              scale: paused ? 1 : 0,
-              fill: paused ? "var(--accent)" : "var(--background)",
-            }}
+            fill={paused ? "var(--complete)" : "var(--surface)"}
+            initial={{ scale: 0 }}
+            animate={{ scale: paused ? 1 : 0 }}
             transition={{
               duration: 0.4,
               ease: EASING.inOutCubic,
@@ -73,8 +68,8 @@ export function SolidDrawing() {
         </motion.svg>
 
         <motion.div
-          className={styles.orbit}
-          data-loaded={paused}
+          className={styles["orbit-marker"]}
+          data-paused={paused}
           initial={{
             transform:
               "translate(-50%, -50%) rotateY(20deg) translateZ(48px) rotateY(340deg)",
@@ -105,21 +100,10 @@ export function SolidDrawing() {
                 }
           }
         >
-          <div className={styles.bg} />
+          <div className={styles["orbit-layer-back"]} />
+          <div className={styles["orbit-layer-middle"]} />
           <motion.div
-            className={styles.mg}
-            style={{
-              transform: "translate(-50%, -50%)",
-            }}
-            animate={{
-              background: paused ? "var(--orbit-complete)" : "var(--accent)",
-            }}
-          />
-          <motion.div
-            className={styles.fg}
-            style={{
-              transform: "translate(-50%, -50%)",
-            }}
+            className={styles["orbit-layer-front"]}
             animate={{
               width: paused ? 0 : 8,
               height: paused ? 0 : 8,
@@ -132,7 +116,11 @@ export function SolidDrawing() {
         </motion.div>
       </div>
 
-      <button onClick={toggle} className={styles.button} type="button">
+      <button
+        onClick={toggle}
+        className={styles["toggle-button"]}
+        type="button"
+      >
         {isPlaying ? "Pause" : "Play"}
       </button>
     </div>

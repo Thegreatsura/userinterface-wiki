@@ -71,7 +71,7 @@
   background-position: center;
   background-size: cover;
   border-radius: 8px;
-  box-shadow: 0 0 0 1px var(--border-primary);
+  box-shadow: 0 0 0 1px var(--gray-4);
 }
 
 .overlay {

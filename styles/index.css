@@ -1,23 +1,6 @@
 @import url(./theme/index.css);
 
 :root {
-  --background-primary: var(--gray-1);
-  --background-secondary: var(--gray-2);
-  --font-interactive-primary: var(--gray-3);
-  --font-interactive-secondary: var(--gray-4);
-  --font-interactive-tertiary: var(--gray-5);
-  --border-primary: var(--gray-6);
-  --border-secondary: var(--gray-7);
-  --border-tertiary: var(--gray-8);
-  --solid-primary: var(--gray-9);
-  --solid-secondary: var(--gray-10);
-
-  --foreground-primary: var(--gray-12);
-  --foreground-secondary: var(--gray-11);
-  --foreground-tertiary: var(--gray-10);
-
-  --color-accent: var(--gray-12);
-  --color-link: var(--color-accent);
   --prose-block-spacing-small: 8px;
   --prose-block-spacing: 16px;
   --prose-block-spacing-large: 24px;

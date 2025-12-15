@@ -1,0 +1,134 @@
+.container {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 48px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    gap: 72px;
+  }
+}
+
+.divider {
+  position: relative;
+  width: 4px;
+  height: 100%;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
+}
+
+.select {
+  position: relative;
+
+  &::before {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    font-size: 12px;
+    color: var(--gray-8);
+    letter-spacing: var(--font-inter-letter-spacing-12px);
+    white-space: nowrap;
+    content: attr(data-caption);
+    transform: translateX(-50%);
+  }
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 8px 12px;
+  cursor: pointer;
+  background: var(--white-a12);
+  border: 1px solid var(--gray-4);
+  border-radius: 8px;
+  transition: background 0.2s ease-in-out;
+
+  &:hover,
+  &[data-popup-open],
+  &[data-pressed] {
+    background: var(--gray-2);
+  }
+}
+
+.value {
+  font-size: 12px;
+  color: var(--gray-12);
+  letter-spacing: var(--font-inter-letter-spacing-12px);
+}
+
+.positioner {
+  min-width: var(--anchor-width, 200px);
+}
+
+.popup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-sizing: border-box;
+  max-height: 300px;
+  padding-block: 4px;
+  overflow-y: auto;
+  color: var(--color-gray-900);
+  scrollbar-width: none;
+  scroll-padding-block: 4px;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  background: var(--gray-1);
+  border: 1px solid var(--gray-4);
+  border-radius: 8px;
+  box-shadow: var(--shadow-dropdown);
+  transform-origin: var(--transform-origin);
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+
+  &[data-starting-style],
+  &[data-ending-style] {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  &[data-animation="pose-to-pose"] {
+    transition: none;
+  }
+
+  &[data-animation="blend"] {
+    &[data-starting-style] {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 0 10px;
+  margin: 0 4px;
+  font-size: 13px;
+  color: var(--gray-11);
+  letter-spacing: var(--font-inter-letter-spacing-13px);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+  &[data-selected] {
+    color: var(--gray-12);
+    outline: none;
+    background: var(--gray-3);
+  }
+
+  &[data-highlighted] {
+    color: var(--gray-12);
+    outline: none;
+  }
+}

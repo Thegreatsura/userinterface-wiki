@@ -52,7 +52,7 @@ function useMagnet(
   const scale = useTransform(attraction, (a) => 1 + a * 0.15);
 
   const background = useTransform(isActive, (active) =>
-    active ? "var(--sky-a9)" : "transparent",
+    active ? "var(--green-8)" : "transparent",
   );
 
   return {

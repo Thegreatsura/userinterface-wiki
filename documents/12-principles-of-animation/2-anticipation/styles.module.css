@@ -70,7 +70,7 @@
 
   &:hover {
     &::before {
-      background: var(--background-secondary);
+      background: var(--gray-2);
       opacity: 1;
     }
 
@@ -81,7 +81,7 @@
 
   &[data-state="checked"] {
     &::before {
-      background: var(--background-secondary);
+      background: var(--gray-2);
       opacity: 1;
     }
   }
@@ -185,7 +185,7 @@
   width: fit-content;
   padding: 8px;
 
-  background: var(--background-primary);
+  background: var(--gray-1);
   border-radius: 100px;
   box-shadow:
     0 6px 18px oklch(0 0 0 / 6%),
@@ -230,7 +230,7 @@
 .clear {
   color: var(--gray-12);
   background: var(--white-a12);
-  box-shadow: 0 0px 0px 1px var(--border-primary);
+  box-shadow: 0 0px 0px 1px var(--gray-4);
 }
 
 .delete {
