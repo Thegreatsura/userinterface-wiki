@@ -8,6 +8,7 @@ import type { ComponentProps } from "react";
 import React from "react";
 import { PauseIcon } from "@/components/icons/pause";
 import { PlayIcon } from "@/components/icons/play";
+import { getGradientColors } from "@/lib/utils/colors";
 import { ExpandIcon } from "../icons/expand";
 import { PictureInPictureIcon } from "../icons/picture-in-picture";
 import { Orb } from "../orb";
@@ -56,14 +57,19 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
     };
   }, []);
 
+  const orbColors = React.useMemo(
+    () => getGradientColors(slugSegments.join("-")),
+    [slugSegments],
+  );
+
   return (
     <React.Fragment>
       <div ref={readerRef} className={styles.reader}>
         <Orb
-        colors={
-
-        }
-        agentState={agentState} className={styles.orb} />
+          colors={orbColors}
+          agentState={agentState}
+          className={styles.orb}
+        />
         {status !== "loading" && (
           <motion.div
             className={styles.controls}
