@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { AudioReader } from "@/components/audio-reader";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { Article } from "@/components/layout";
@@ -40,8 +41,8 @@ export default async function Page(props: {
     <PageTransition>
       <Header page={page} />
       <Article>
-        {/* <AudioReader slugSegments={params.slug} />
-         */}
+        <AudioReader slugSegments={params.slug} />
+
         <MDX components={getMDXComponents()} />
       </Article>
       <Footer />

@@ -16,6 +16,22 @@ export function rehypeWordSpans() {
   return (tree: Root) => {
     let counter = 0;
 
+    const parentMap = new WeakMap<Element, Element | null>();
+    visit(tree, "element", (node, _index, parent) => {
+      parentMap.set(node, parent as Element | null);
+    });
+
+    const isInFootnotes = (element: Element): boolean => {
+      let current: Element | null = element;
+      while (current) {
+        if (current.properties?.["dataFootnotes"] !== undefined) {
+          return true;
+        }
+        current = parentMap.get(current) ?? null;
+      }
+      return false;
+    };
+
     visit(tree, "text", (node, index, parent) => {
       if (typeof index !== "number" || !parent) return;
 
@@ -27,6 +43,10 @@ export function rehypeWordSpans() {
         parentElement.tagName &&
         SKIP_TAGS.has(parentElement.tagName.toLowerCase())
       ) {
+        return;
+      }
+
+      if (isInFootnotes(parentElement)) {
         return;
       }
 

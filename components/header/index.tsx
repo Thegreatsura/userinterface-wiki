@@ -10,14 +10,14 @@ export function Header({ page }: HeaderProps) {
 
   const hasCoauthors = coauthors && coauthors.length > 0;
   return (
-    <header className={styles.header}>
+    <div className={styles.header}>
       <h1 className={styles.title}>{title}</h1>
       <div className={styles.metadata}>
         {date.published}&nbsp;by&nbsp;
         {author.name}
         {hasCoauthors && <span>&nbsp;and {coauthors.length} others</span>}
       </div>
-    </header>
+    </div>
   );
 }
 

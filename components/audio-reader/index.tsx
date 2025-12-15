@@ -59,7 +59,11 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
   return (
     <React.Fragment>
       <div ref={readerRef} className={styles.reader}>
-        <Orb agentState={agentState} className={styles.orb} />
+        <Orb
+        colors={
+
+        }
+        agentState={agentState} className={styles.orb} />
         {status !== "loading" && (
           <motion.div
             className={styles.controls}

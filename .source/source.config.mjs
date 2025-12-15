@@ -29,12 +29,29 @@ var SKIP_TAGS = /* @__PURE__ */ new Set([
 function rehypeWordSpans() {
   return (tree) => {
     let counter = 0;
+    const parentMap = /* @__PURE__ */ new WeakMap();
+    visit(tree, "element", (node, _index, parent) => {
+      parentMap.set(node, parent);
+    });
+    const isInFootnotes = (element) => {
+      let current = element;
+      while (current) {
+        if (current.properties?.["dataFootnotes"] !== void 0) {
+          return true;
+        }
+        current = parentMap.get(current) ?? null;
+      }
+      return false;
+    };
     visit(tree, "text", (node, index, parent) => {
       if (typeof index !== "number" || !parent) return;
       const textNode = node;
       if (!textNode.value.trim()) return;
       const parentElement = parent;
       if (parentElement.tagName && SKIP_TAGS.has(parentElement.tagName.toLowerCase())) {
+        return;
+      }
+      if (isInFootnotes(parentElement)) {
         return;
       }
       const segments = textNode.value.split(/(\s+)/);

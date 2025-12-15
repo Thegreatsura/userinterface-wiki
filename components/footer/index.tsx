@@ -25,7 +25,7 @@ function Section({ title, children }: SectionProps) {
 
 export function Footer(): React.JSX.Element {
   return (
-    <footer className={styles.header}>
+    <div className={styles.footer}>
       <hr className={styles.divider} />
       <div className={styles.metadata}>
         <Section title="Share Article">
@@ -56,7 +56,7 @@ export function Footer(): React.JSX.Element {
           </Button>
         </Section>
       </div>
-    </footer>
+    </div>
   );
 }
 
