@@ -77,26 +77,24 @@ export function FollowThroughAndOverlappingAction() {
   const right = useMagnet(dragX, dragY, rightCenter);
 
   const magnets = { left, right } as const;
-  const centerRefs = { left: leftCenter, right: rightCenter };
 
   useLayoutEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const updateCenters = () => {
-      const rect = container.getBoundingClientRect();
-      for (const pane of PANES) {
-        const el = container.querySelector(`[data-id="${pane.id}"]`);
-        if (!el) continue;
-        const paneRect = el.getBoundingClientRect();
-        centerRefs[pane.id].current = {
-          x: paneRect.left + paneRect.width / 2 - rect.left - rect.width / 2,
-          y: paneRect.top + paneRect.height / 2 - rect.top - rect.height / 2,
-        };
-      }
-    };
+    const rect = container.getBoundingClientRect();
 
-    updateCenters();
+    for (const pane of PANES) {
+      const el = container.querySelector(`[data-id="${pane.id}"]`);
+      if (!el) continue;
+      const paneRect = el.getBoundingClientRect();
+      const center = {
+        x: paneRect.left + paneRect.width / 2 - rect.left - rect.width / 2,
+        y: paneRect.top + paneRect.height / 2 - rect.top - rect.height / 2,
+      };
+      if (pane.id === "left") leftCenter.current = center;
+      if (pane.id === "right") rightCenter.current = center;
+    }
   }, []);
 
   return (
