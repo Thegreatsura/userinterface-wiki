@@ -2,7 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { useLayoutEffect, useRef, useState } from "react";
-import { DiaBrowser } from "./dia-browser";
+import { Browser } from "./browser";
 import styles from "./styles.module.css";
 
 const CONFIG = {
@@ -36,7 +36,6 @@ export function FollowThroughAndOverlappingAction() {
   const springX = useSpring(dragX, { damping: 40, stiffness: 800 });
   const springY = useSpring(dragY, { damping: 40, stiffness: 800 });
 
-  // Create transforms for left pane
   const leftDistance = useTransform([springX, springY], (values) => {
     const [x, y] = values as [number, number];
     if (!centers.left) return CONFIG.INITIAL_DISTANCE + 1;
@@ -106,7 +105,7 @@ export function FollowThroughAndOverlappingAction() {
     { damping: 40, stiffness: 800 },
   );
   const leftBg = useTransform(leftIsActive, (on) =>
-    on ? "rgba(0,150,255,0.2)" : "transparent",
+    on ? "var(--sky-a9)" : "transparent",
   );
 
   // Create transforms for right pane
@@ -182,7 +181,7 @@ export function FollowThroughAndOverlappingAction() {
     { damping: 40, stiffness: 800 },
   );
   const rightBg = useTransform(rightIsActive, (on) =>
-    on ? "rgba(0,150,255,0.2)" : "transparent",
+    on ? "var(--sky-a9)" : "transparent",
   );
 
   const transforms = {
@@ -256,7 +255,7 @@ export function FollowThroughAndOverlappingAction() {
         );
       })}
 
-      <DiaBrowser
+      <Browser
         drag
         whileDrag={{ scale: 0.95, opacity: 0.8 }}
         animate={{ scale: 1, opacity: 1 }}

@@ -14,7 +14,7 @@ const SKIP_TAGS = new Set([
 
 export function rehypeWordSpans() {
   return (tree: Root) => {
-    let counter = 0;
+    const _counter = 0;
 
     visit(tree, "text", (node, index, parent) => {
       if (typeof index !== "number" || !parent) return;
@@ -46,10 +46,10 @@ export function rehypeWordSpans() {
         return {
           type: "element",
           tagName: "span",
-          properties: {
-            "data-word-id": `word-${counter++}`,
-            "data-word-normalized": normalized,
-          },
+          // properties: {
+          //   "data-word-id": `word-${counter++}`,
+          //   "data-word-normalized": normalized,
+          // },
           children: [{ type: "text", value: segment }],
         } satisfies Element;
       });

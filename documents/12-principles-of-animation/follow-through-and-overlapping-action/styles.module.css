@@ -3,16 +3,6 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  background: var(--background-secondary);
-}
-
-.noiseFilter {
-  position: absolute;
-  visibility: hidden;
-  width: 0;
-  height: 0;
-  overflow: hidden;
 }
 
 .pane {
@@ -35,20 +25,19 @@
   transition: background 0.2s ease;
 }
 
-.pane.magnetizedActive {
-  background: oklch(95.151% 0.01683 236.906);
-}
-
-.dia {
+.browser {
   position: absolute;
   z-index: 10;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 128px;
-  cursor: grabbing;
-  background: rgba(235, 235, 235, 0.82);
-  border-radius: 4px;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 170.667px;
+  height: 128px;
+  padding: 2.56px;
+  background: var(--gray-4);
+
+  border-radius: 4.267px;
+
   box-shadow:
     0 0 0 0.5px rgba(0, 0, 0, 0.25),
     0 1px 0.5px 0 rgba(255, 255, 255, 0.6) inset,
@@ -58,9 +47,89 @@
     0 5.885px 6.636px 0 rgba(0, 0, 0, 0.04),
     0 3.126px 3.525px 0 rgba(0, 0, 0, 0.03),
     0 1.301px 1.467px 0 rgba(0, 0, 0, 0.02);
-  backdrop-filter: blur(20px);
 }
 
-.pane[data-active="true"] {
-  background-color: #e5f1f9;
+.browser .tab-bar {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+}
+
+.browser .tab-bar .buttons {
+  display: flex;
+  gap: 3.413px;
+  align-items: center;
+  height: 13.653px;
+  padding: 5.12px 5.12px 5.12px 2.56px;
+}
+
+.browser .tab-bar .buttons > :nth-child(1),
+.browser .tab-bar .buttons > :nth-child(2),
+.browser .tab-bar .buttons > :nth-child(3) {
+  width: 5.12px;
+  height: 5.12px;
+  border-radius: 100px;
+}
+
+.browser .tab-bar .buttons > :nth-child(1) {
+  background-color: var(--green-9);
+}
+
+.browser .tab-bar .buttons > :nth-child(2) {
+  background-color: var(--amber-9);
+}
+
+.browser .tab-bar .buttons > :nth-child(3) {
+  background-color: var(--red-9);
+}
+
+.browser .tab-bar .tab-container {
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 54.613px;
+  height: 13.653px;
+}
+
+.browser .tab-bar .tab-container .tab {
+  position: relative;
+  display: flex;
+  flex: 1 0 0;
+  gap: 3.413px;
+  align-items: flex-start;
+  align-self: stretch;
+  justify-content: center;
+  background: var(--gray-1);
+  border-radius: 4.267px 4.267px 0 0;
+}
+
+.browser .tab-bar .tab-container .tab .edge:nth-child(1),
+.browser .tab-bar .tab-container .tab .edge:nth-child(2) {
+  position: absolute;
+  bottom: -1px;
+  color: var(--gray-1);
+}
+
+.browser .tab-bar .tab-container .tab .edge:nth-child(1) {
+  right: -5.12px;
+}
+
+.browser .tab-bar .tab-container .tab .edge:nth-child(2) {
+  left: -5.12px;
+  transform: scaleX(-1);
+}
+
+.browser .window {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  background: var(--gray-1);
+  border-radius: 2.56px;
+  box-shadow:
+    0 2.56px 2.56px 0 rgba(0, 0, 0, 0.05),
+    0 0.427px 0.853px 0 rgba(0, 0, 0, 0.05),
+    0 0 1.707px 0 rgba(0, 0, 0, 0.12);
 }
