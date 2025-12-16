@@ -1,4 +1,4 @@
-import type { IconProps } from "@/components/icons";
+import type { IconProps } from "@/components/icons/types";
 
 export const CrownIcon = ({
   size = 24,

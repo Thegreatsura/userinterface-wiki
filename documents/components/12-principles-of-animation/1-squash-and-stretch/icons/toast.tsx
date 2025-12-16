@@ -1,5 +1,4 @@
-import type { IconProps } from "@/components/icons";
-
+import type { IconProps } from "@/components/icons/types";
 export const ToastIcon = ({
   size = 24,
   color = "currentColor",

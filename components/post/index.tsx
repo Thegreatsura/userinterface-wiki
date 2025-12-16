@@ -14,18 +14,16 @@ interface PageCardProps {
 export function PageCard({ page, className, ...props }: PageCardProps) {
   const { title, description, author, date, icon } = page;
 
-  console.log("Page icon:", icon);
-
   const Icon = () => {
     switch (icon) {
       case "motion":
         return <MotionPreviewIcon />;
       case "code":
-        return <CodePreviewIcon />;
+        return <CodePreviewIcon seed={title} />;
       case "writing":
-        return <EssayPreviewIcon />;
+        return <EssayPreviewIcon seed={title} />;
       default:
-        return <EssayPreviewIcon />;
+        return <EssayPreviewIcon seed={title} />;
     }
   };
 
