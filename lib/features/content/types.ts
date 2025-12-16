@@ -17,6 +17,7 @@ export interface FormattedPage {
   tags: string[];
   author: Author;
   coauthors: Author[];
+  icon?: "motion" | "code" | "writing";
   date: {
     published: string;
   };

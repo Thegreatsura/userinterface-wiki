@@ -92,7 +92,8 @@ var docs = defineDocs({
       description: z.string(),
       author: z.string(),
       coauthors: z.array(z.string()).optional(),
-      tags: z.array(z.string())
+      tags: z.array(z.string()),
+      icon: z.enum(["writing", "code", "motion"]).optional().default("writing")
     })
   },
   meta: {}

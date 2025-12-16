@@ -1,7 +1,9 @@
 import { clsx } from "clsx";
 import Link from "next/link";
 import type { FormattedPage } from "@/lib/features/content";
-
+import { CodePreviewIcon } from "../icons";
+import { EssayPreviewIcon } from "../icons/essay-preview";
+import { MotionPreviewIcon } from "../icons/motion-preview";
 import styles from "./styles.module.css";
 
 interface PageCardProps {
@@ -10,7 +12,22 @@ interface PageCardProps {
 }
 
 export function PageCard({ page, className, ...props }: PageCardProps) {
-  const { title, description, author, date } = page;
+  const { title, description, author, date, icon } = page;
+
+  console.log("Page icon:", icon);
+
+  const Icon = () => {
+    switch (icon) {
+      case "motion":
+        return <MotionPreviewIcon />;
+      case "code":
+        return <CodePreviewIcon />;
+      case "writing":
+        return <EssayPreviewIcon />;
+      default:
+        return <EssayPreviewIcon />;
+    }
+  };
 
   return (
     <Link
@@ -19,7 +36,9 @@ export function PageCard({ page, className, ...props }: PageCardProps) {
       {...props}
     >
       <div className={styles.details}>
-        <div className={styles.preview}>{/* <Code /> */}</div>
+        <div className={styles.preview}>
+          <Icon />
+        </div>
         <div>
           <h2 className={styles.title}>{title}</h2>
           <span className={styles.meta}>

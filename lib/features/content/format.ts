@@ -12,6 +12,7 @@ function formatData(data: Page["data"]) {
     tags: data.tags ?? [],
     author: getAuthorById(data.author),
     coauthors: (data.coauthors ?? []).map(getAuthorById),
+    icon: data.icon,
     date: {
       published: new Intl.DateTimeFormat("en-US", {
         year: "numeric",
