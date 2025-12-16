@@ -219,13 +219,13 @@
     counter-reset: list 0;
   }
 
-  [data-footnotes] ol li {
+  [data-footnotes] ol[data-prose-type="list"] li {
     position: relative;
     margin-left: 12px;
     counter-increment: list;
   }
 
-  [data-footnotes] ol li::before {
+  [data-footnotes] ol[data-prose-type="list"] li::before {
     position: absolute;
     top: -2px;
     left: -12px;

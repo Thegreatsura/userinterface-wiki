@@ -364,8 +364,23 @@ const SettingsMenu = ({
           >
             Automatic Scrolling
             <Menu.CheckboxItemIndicator
-              className={styles.indicator}
-              render={<CheckIcon size={16} />}
+              className={styles.check}
+              keepMounted
+              render={
+                <AnimatePresence initial={false}>
+                  {autoScroll && (
+                    <motion.div
+                      key="check"
+                      initial={{ opacity: 0, scale: 0.8, filter: "blur(2px)" }}
+                      animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, scale: 0.8, filter: "blur(2px)" }}
+                      transition={{ duration: 0.18 }}
+                    >
+                      <CheckIcon size={16} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              }
             />
           </Menu.CheckboxItem>
           <Menu.Item

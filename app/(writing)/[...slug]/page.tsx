@@ -49,7 +49,11 @@ export default async function Page(props: {
         />
         <MDX components={getMDXComponents()} />
       </Article>
-      <Footer />
+      <Footer
+        slug={params.slug}
+        title={page.data.title}
+        description={page.data.description}
+      />
     </PageTransition>
   );
 }
