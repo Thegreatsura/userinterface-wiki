@@ -27,6 +27,7 @@ interface AudioReaderHookState {
   agentState: AgentState;
   setAgentState: (state: AgentState) => void;
   handleToggle: () => Promise<void> | void;
+  seek: (time: number) => void;
 }
 
 export function useAudioReader(slugSegments: string[]): AudioReaderHookState {
@@ -323,6 +324,17 @@ export function useAudioReader(slugSegments: string[]): AudioReaderHookState {
     setIsPlaying,
   ]);
 
+  const seek = useCallback(
+    (time: number) => {
+      if (!audioRef.current) return;
+      const clampedTime = Math.max(0, Math.min(time, duration));
+      audioRef.current.currentTime = clampedTime;
+      setCurrentTime(clampedTime);
+      lastWordIndexRef.current = -1;
+    },
+    [duration, setCurrentTime],
+  );
+
   const applyHighlight = useCallback(
     (wordIndex: number) => {
       const spanIndex = mappingRef.current[wordIndex];
@@ -400,5 +412,6 @@ export function useAudioReader(slugSegments: string[]): AudioReaderHookState {
     agentState,
     setAgentState,
     handleToggle,
+    seek,
   };
 }

@@ -21,8 +21,15 @@ interface AudioReaderProps {
 }
 
 export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
-  const { status, isPlaying, duration, currentTime, agentState, handleToggle } =
-    useAudioReader(slugSegments);
+  const {
+    status,
+    isPlaying,
+    duration,
+    currentTime,
+    agentState,
+    handleToggle,
+    seek,
+  } = useAudioReader(slugSegments);
 
   const readerRef = React.useRef<HTMLDivElement | null>(null);
   const [isReaderVisible, setIsReaderVisible] = React.useState(true);
@@ -31,6 +38,16 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
     duration > 0
       ? Math.min(Math.max((currentTime / duration) * 100, 0), 100)
       : 0;
+
+  const handleSeek = React.useCallback(
+    (value: number | number[]) => {
+      const percent = Array.isArray(value) ? value[0] : value;
+      if (percent === undefined || duration <= 0) return;
+      const time = (percent / 100) * duration;
+      seek(time);
+    },
+    [duration, seek],
+  );
 
   const IconSwitchTransition = {
     initial: { opacity: 0, scale: 0.8 },
@@ -93,7 +110,11 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
 
             <MediaPlayerButton>1x</MediaPlayerButton>
 
-            <Slider.Root value={progress} className={styles.slider}>
+            <Slider.Root
+              value={progress}
+              onValueChange={handleSeek}
+              className={styles.slider}
+            >
               <Time>{formatTime(currentTime)}</Time>
               <Slider.Control className={styles.control}>
                 <Slider.Track className={styles.track}>
@@ -181,7 +202,11 @@ export const AudioReader = ({ slugSegments }: AudioReaderProps) => {
 
               <MediaPlayerButton>1x</MediaPlayerButton>
 
-              <Slider.Root value={progress} className={styles.slider}>
+              <Slider.Root
+                value={progress}
+                onValueChange={handleSeek}
+                className={styles.slider}
+              >
                 <Time>{formatTime(currentTime)}</Time>
                 <Slider.Control className={styles.control}>
                   <Slider.Track className={styles.track}>

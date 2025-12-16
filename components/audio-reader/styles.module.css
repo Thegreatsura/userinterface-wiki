@@ -28,51 +28,50 @@
   justify-content: center;
   font-family: var(--font-family-display);
   font-size: 14px;
-
   font-weight: var(--font-weight-medium);
   line-height: 100%;
   color: var(--white-a12);
   letter-spacing: var(--font-inter-letter-spacing-14px);
+}
 
-  .slider {
-    --height: 4px;
-    display: flex;
-    flex: 1 0 0;
-    gap: 16px;
-    align-items: center;
-    width: 100%;
-    margin-inline: 16px;
+.slider {
+  --height: 4px;
+  display: flex;
+  flex: 1 0 0;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+  margin-inline: 16px;
+}
 
-    .control {
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      width: 100%;
-      padding-block: 0.75rem;
-      overflow: hidden;
-      touch-action: none;
-      user-select: none;
-    }
+.control {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-block: 0.75rem;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+}
 
-    .track {
-      width: 100%;
-      height: var(--height);
-      overflow: hidden;
-      user-select: none;
-      background: var(--white-a4);
-      border-radius: 0.25rem;
-      box-shadow: inset 0 0 0 1px var(--color-gray-200);
-    }
+.track {
+  width: 100%;
+  height: var(--height);
+  overflow: hidden;
+  user-select: none;
+  background: var(--white-a4);
+  border-radius: 0.25rem;
+}
 
-    .indicator {
-      user-select: none;
-      background-color: var(--white-a12);
-    }
+.indicator {
+  user-select: none;
+  background-color: var(--white-a12);
+}
 
-    .time {
-      font-variant-numeric: tabular-nums;
-    }
-  }
+.time {
+  z-index: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .button {
@@ -84,32 +83,32 @@
   min-height: 32px;
   aspect-ratio: 1 / 1;
   transition: all 0.2s;
+}
 
-  svg {
-    width: 16px;
-    height: 16px;
-  }
+.button svg {
+  width: 16px;
+  height: 16px;
+}
 
-  &::before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    content: "";
-    border-radius: 8px;
-    scale: 0.8;
-    transition: all 0.2s;
-  }
+.button::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  content: "";
+  border-radius: 8px;
+  scale: 0.8;
+  transition: all 0.2s;
+}
 
-  &:hover::before {
-    background-color: var(--white-a4);
-    scale: 1;
-  }
+.button:hover::before {
+  background-color: var(--white-a4);
+  scale: 1;
+}
 
-  &:active {
-    scale: 0.95;
-  }
+.button:active {
+  scale: 0.95;
 }
 
 .floating {
@@ -124,42 +123,40 @@
   height: 256px;
   pointer-events: none;
   transform: translateX(-50%);
+}
 
-  .controls {
-    position: absolute;
-    bottom: 0;
-    display: flex;
-    flex-shrink: 0;
-    gap: 16px;
-    align-items: center;
-    justify-content: center;
-    width: 768px;
-    height: 48px;
-    padding: 12px;
-    pointer-events: auto;
-    background: var(--gray-a6);
-    border-radius: 16px;
-    box-shadow: 0 8px 16px 0px rgba(0, 0, 0, 0.1);
-    background-blend-mode: luminosity;
-    backdrop-filter: blur(24px);
-  }
+.floating .controls {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-shrink: 0;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  width: 768px;
+  height: 48px;
+  padding: 12px;
+  pointer-events: auto;
+  background: var(--gray-a6);
+  border-radius: 16px;
+  box-shadow: 0 8px 16px 0px rgba(0, 0, 0, 0.1);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(24px);
+}
 
-  .background {
-    position: fixed;
-    bottom: 0;
-    /* allow click through */
-    z-index: -1;
-    width: 100%;
-    height: 256px;
-    /* disable interactions */
-    pointer-events: none;
+.background {
+  position: fixed;
+  bottom: 0;
+  z-index: -1;
+  width: 100%;
+  height: 256px;
+  pointer-events: none;
+}
 
-    .blur {
-      width: 100%;
-      height: 100%;
-      background: var(--gray-a1);
-      backdrop-filter: blur(6px);
-      mask-image: linear-gradient(to top, black 0%, transparent 100%);
-    }
-  }
+.blur {
+  width: 100%;
+  height: 100%;
+  background: var(--gray-a1);
+  backdrop-filter: blur(6px);
+  mask-image: linear-gradient(to top, black 0%, transparent 100%);
 }

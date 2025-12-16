@@ -12,7 +12,7 @@
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
-  padding-bottom: 128;
+  padding-bottom: 256px;
 }
 
 .title {
