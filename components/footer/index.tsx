@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
+import { usePathname } from "next/navigation";
 import type React from "react";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/button";
@@ -40,11 +41,9 @@ export function Footer({
 }: FooterProps): React.JSX.Element {
   const [isLinkCopied, setIsLinkCopied] = useState(false);
   const [isTextCopied, setIsTextCopied] = useState(false);
+  const pathname = usePathname();
 
-  const articleUrl =
-    typeof window !== "undefined"
-      ? window.location.href
-      : `https://userinterface.wiki/${slug.join("/")}`;
+  const articleUrl = `https://userinterface.wiki${pathname}`;
 
   const githubUrl = `https://github.com/raphaelsalaja/userinterface-wiki/blob/main/documents/${slug.join("/")}.mdx`;
 

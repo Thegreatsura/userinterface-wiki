@@ -5,22 +5,34 @@ import Link from "next/link";
 import styles from "./styles.module.css";
 
 const LINKS = [
-  { href: "/react/overview", title: "X (Twitter)" },
-  { href: "/react/handbook", title: "GitHub" },
-  { href: "", title: "Support   " },
+  {
+    href: "https://twitter.com/raphaelsalaja",
+    title: "X (Twitter)",
+    external: true,
+  },
+  {
+    href: "https://github.com/raphaelsalaja/userinterface-wiki",
+    title: "GitHub",
+    external: true,
+  },
 ];
 
 export default function Navigation() {
   return (
     <NavigationMenu.Root className={styles.root}>
       <div className={styles.container}>
-        <Link href="/" className={styles.logo}>
+        <Link href="/" className={styles.logo} aria-label="UI Wiki Home">
           ui.wiki
         </Link>
         <NavigationMenu.List className={styles.list}>
           {LINKS.map((link) => (
             <NavigationMenu.Item key={link.title}>
-              <NavigationMenu.Link className={styles.trigger} href={link.href}>
+              <NavigationMenu.Link
+                className={styles.trigger}
+                href={link.href}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener noreferrer" : undefined}
+              >
                 {link.title}
               </NavigationMenu.Link>
             </NavigationMenu.Item>

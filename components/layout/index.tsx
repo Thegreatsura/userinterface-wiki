@@ -8,6 +8,15 @@ export const Main = ({ children }: { children: React.ReactNode }) => {
   return <main className={styles.main}>{children}</main>;
 };
 
-export const Root = ({ children }: { children: React.ReactNode }) => {
-  return <div className={styles.root}>{children}</div>;
+interface RootProps {
+  children: React.ReactNode;
+  id?: string;
+}
+
+export const Root = ({ children, id }: RootProps) => {
+  return (
+    <div className={styles.root} id={id}>
+      {children}
+    </div>
+  );
 };

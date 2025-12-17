@@ -247,7 +247,10 @@ const Controls = ({
   onDownload,
 }: ControlsProps) => (
   <React.Fragment>
-    <MediaPlayerButton onClick={onToggle}>
+    <MediaPlayerButton
+      onClick={onToggle}
+      aria-label={isPlaying ? "Pause" : "Play"}
+    >
       <AnimatePresence mode="wait">
         {isPlaying ? (
           <motion.div {...ICON_TRANSITION} key="pause">
@@ -268,6 +271,7 @@ const Controls = ({
     <Slider.Root
       value={progress}
       onValueChange={onSeek}
+      aria-label="Playback progress"
       className={clsx(
         styles.slider,
         showChapters ? styles.withChapters : undefined,
@@ -299,7 +303,7 @@ interface ChaptersMenuProps {
 
 const ChaptersMenu = ({ chapters, onChapterClick }: ChaptersMenuProps) => (
   <Menu.Root>
-    <Menu.Trigger render={<MediaPlayerButton />}>
+    <Menu.Trigger render={<MediaPlayerButton aria-label="Chapters" />}>
       <PlaylistIcon />
     </Menu.Trigger>
     <Menu.Portal>
@@ -346,7 +350,7 @@ const SettingsMenu = ({
   onDownload,
 }: SettingsMenuProps) => (
   <Menu.Root>
-    <Menu.Trigger render={<MediaPlayerButton />}>
+    <Menu.Trigger render={<MediaPlayerButton aria-label="Settings" />}>
       <GearIcon />
     </Menu.Trigger>
     <Menu.Portal>
