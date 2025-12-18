@@ -86,7 +86,8 @@ export const useAudioReaderStore = create<AudioReaderStore>((set) => ({
   setAgentState: (agentState) => set(() => ({ agentState })),
   setAutoScroll: (enabled) => set(() => ({ autoScroll: enabled })),
   setPlaybackRate: (rate) => set(() => ({ playbackRate: rate })),
-  setVolume: (volume) => set(() => ({ volume: Math.max(0, Math.min(1, volume)) })),
+  setVolume: (volume) =>
+    set(() => ({ volume: Math.max(0, Math.min(1, volume)) })),
   setIsMuted: (muted) => set(() => ({ isMuted: muted })),
   toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
   setIsLooping: (looping) => set(() => ({ isLooping: looping })),

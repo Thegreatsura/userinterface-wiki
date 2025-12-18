@@ -23,8 +23,8 @@ import {
   VolumeLowIcon,
   VolumeMuteIcon,
 } from "@/components/icons";
-import type { PlaybackRate } from "./store";
 import { Orb } from "../orb";
+import type { PlaybackRate } from "./store";
 import styles from "./styles.module.css";
 import { useAudioReader } from "./use-audio-reader";
 import { formatTime } from "./utils";
@@ -450,9 +450,7 @@ const VolumeControl = ({
       <Tooltip.Root>
         <Tooltip.Trigger
           render={
-            <Menu.Trigger
-              render={<MediaPlayerButton aria-label="Volume" />}
-            >
+            <Menu.Trigger render={<MediaPlayerButton aria-label="Volume" />}>
               <VolumeIcon />
             </Menu.Trigger>
           }
@@ -553,9 +551,21 @@ const PlaybackRateMenu = ({
                         {playbackRate === rate && (
                           <motion.div
                             key="check"
-                            initial={{ opacity: 0, scale: 0.8, filter: "blur(2px)" }}
-                            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                            exit={{ opacity: 0, scale: 0.8, filter: "blur(2px)" }}
+                            initial={{
+                              opacity: 0,
+                              scale: 0.8,
+                              filter: "blur(2px)",
+                            }}
+                            animate={{
+                              opacity: 1,
+                              scale: 1,
+                              filter: "blur(0px)",
+                            }}
+                            exit={{
+                              opacity: 0,
+                              scale: 0.8,
+                              filter: "blur(2px)",
+                            }}
                             transition={{ duration: 0.18 }}
                           >
                             <CheckIcon size={16} />
@@ -628,7 +638,11 @@ const SettingsMenu = ({
                     {autoScroll && (
                       <motion.div
                         key="check"
-                        initial={{ opacity: 0, scale: 0.8, filter: "blur(2px)" }}
+                        initial={{
+                          opacity: 0,
+                          scale: 0.8,
+                          filter: "blur(2px)",
+                        }}
                         animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                         exit={{ opacity: 0, scale: 0.8, filter: "blur(2px)" }}
                         transition={{ duration: 0.18 }}
@@ -656,7 +670,11 @@ const SettingsMenu = ({
                     {isLooping && (
                       <motion.div
                         key="check"
-                        initial={{ opacity: 0, scale: 0.8, filter: "blur(2px)" }}
+                        initial={{
+                          opacity: 0,
+                          scale: 0.8,
+                          filter: "blur(2px)",
+                        }}
                         animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                         exit={{ opacity: 0, scale: 0.8, filter: "blur(2px)" }}
                         transition={{ duration: 0.18 }}
@@ -669,14 +687,9 @@ const SettingsMenu = ({
               />
             </Menu.CheckboxItem>
 
-
-
             <Menu.Separator className={styles.separator} />
 
-            <Menu.Item
-              className={styles.item}
-              onClick={handleCopyTimestamp}
-            >
+            <Menu.Item className={styles.item} onClick={handleCopyTimestamp}>
               <ShareIcon size={16} />
               {copied ? "Copied!" : "Share at Timestamp"}
             </Menu.Item>
