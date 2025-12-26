@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import type React from "react";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/button";
-import { GithubIcon, TwitterIcon } from "@/icons";
+import { GithubIcon, TwitterIcon } from "@/icons/brands";
 import styles from "./styles.module.css";
 
 interface FooterProps {

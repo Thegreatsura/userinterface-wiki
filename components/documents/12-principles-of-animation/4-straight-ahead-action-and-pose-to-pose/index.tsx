@@ -1,8 +1,8 @@
 "use client";
 
 import { Select } from "@base-ui/react/select";
-import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 import styles from "./styles.module.css";
+import { Checkmark1Icon,   ChevronDownSmallIcon } from "@/icons";
 
 const items = [
   { label: "Apple", value: "apple" },
@@ -18,7 +18,7 @@ export function StraightAheadActionAndPoseToPose() {
           <Select.Trigger className={styles.trigger} style={{ width: 120 }}>
             <Select.Value className={styles.value} />
             <Select.Icon>
-              <ChevronDownIcon />
+              <ChevronDownSmallIcon />
             </Select.Icon>
           </Select.Trigger>
           <Select.Portal>
@@ -37,7 +37,7 @@ export function StraightAheadActionAndPoseToPose() {
                   >
                     <Select.ItemText>{item.label}</Select.ItemText>
                     <Select.ItemIndicator>
-                      <CheckIcon />
+                      <Checkmark1Icon />
                     </Select.ItemIndicator>
                   </Select.Item>
                 ))}
@@ -70,7 +70,7 @@ export function StraightAheadActionAndPoseToPose() {
           <Select.Trigger className={styles.trigger} style={{ width: 120 }}>
             <Select.Value className={styles.value} />
             <Select.Icon>
-              <ChevronDownIcon />
+              <ChevronDownSmallIcon />
             </Select.Icon>
           </Select.Trigger>
           <Select.Portal>
@@ -92,7 +92,7 @@ export function StraightAheadActionAndPoseToPose() {
                   >
                     <Select.ItemText>{item.label}</Select.ItemText>
                     <Select.ItemIndicator>
-                      <CheckIcon />
+                      <Checkmark1Icon />
                     </Select.ItemIndicator>
                   </Select.Item>
                 ))}
@@ -125,7 +125,7 @@ export function StraightAheadActionAndPoseToPose() {
           <Select.Trigger className={styles.trigger} style={{ width: 120 }}>
             <Select.Value className={styles.value} />
             <Select.Icon>
-              <ChevronDownIcon />
+              <ChevronDownSmallIcon />
             </Select.Icon>
           </Select.Trigger>
           <Select.Portal>
@@ -144,7 +144,7 @@ export function StraightAheadActionAndPoseToPose() {
                   >
                     <Select.ItemText>{item.label}</Select.ItemText>
                     <Select.ItemIndicator>
-                      <CheckIcon />
+                      <Checkmark1Icon />
                     </Select.ItemIndicator>
                   </Select.Item>
                 ))}

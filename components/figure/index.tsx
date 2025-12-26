@@ -1,14 +1,11 @@
 "use client";
 
-import {
-  CheckIcon,
-  ClipboardCopyIcon,
-  DownloadIcon,
-} from "@radix-ui/react-icons";
+ 
 import { AnimatePresence, motion } from "motion/react";
 import React from "react";
 import styles from "./styles.module.css";
 import { getRenderablePngBlob } from "./utils";
+import { ArrowInboxIcon, Checkmark1Icon, ClipboardIcon } from "@/icons";
 
 type FigureProps = React.HTMLAttributes<HTMLElement> & {
   children?: React.ReactNode;
@@ -138,11 +135,11 @@ export function Figure({
             <AnimatePresence mode="wait" initial={false}>
               {isCopied ? (
                 <motion.div key="check" {...animationProps}>
-                  <CheckIcon />
+                  <Checkmark1Icon />
                 </motion.div>
               ) : (
                 <motion.div key="link" {...animationProps}>
-                  <ClipboardCopyIcon />
+                  <ClipboardIcon />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -157,11 +154,11 @@ export function Figure({
             <AnimatePresence mode="wait" initial={false}>
               {isDownloaded ? (
                 <motion.div key="check" {...animationProps}>
-                  <CheckIcon />
+                  <Checkmark1Icon />
                 </motion.div>
               ) : (
                 <motion.div key="download" {...animationProps}>
-                  <DownloadIcon />
+                  <ArrowInboxIcon />
                 </motion.div>
               )}
             </AnimatePresence>

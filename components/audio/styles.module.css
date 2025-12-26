@@ -1,0 +1,141 @@
+.audio {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  align-self: stretch;
+  justify-content: center;
+  padding: 32px 24px;
+  color: var(--gray-a10);
+}
+
+.details {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  align-self: stretch;
+}
+
+.details .cover {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+.details .cover .orb,
+.details .cover .glow {
+  position: absolute;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.details .cover .orb {
+  width: 100%;
+  height: 100%;
+}
+
+.details .cover .glow {
+  width: 102%;
+  height: 102%;
+  filter: blur(8px);
+}
+
+.details .cover .canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.details .info {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.details .info .title,
+.details .info .author {
+  font-family: var(--font-family-display);
+  font-size: 14px;
+  letter-spacing: var(--font-inter-letter-spacing-14px);
+}
+
+.details .info .title {
+  font-weight: var(--font-weight-medium);
+  color: var(--gray-a10);
+}
+
+.details .info .author {
+  font-weight: var(--font-weight-normal);
+  color: var(--gray-a8);
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  align-self: stretch;
+  width: 100%;
+}
+
+.progress .root {
+  position: relative;
+  width: 100%;
+}
+
+.progress .root .control {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  touch-action: none;
+  user-select: none;
+}
+
+.progress .root .track {
+  width: 100%;
+  height: 4px;
+  user-select: none;
+  background-color: var(--gray-a4);
+  border-radius: 100px;
+}
+
+.progress .root .indicator {
+  user-select: none;
+  background: var(--gray-a10);
+  border-radius: 0.25rem;
+}
+
+.progress .time {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.progress .time .current,
+.progress .time .duration {
+  font-family: var(--font-family-display);
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: 24px;
+  letter-spacing: var(--font-inter-letter-spacing-12px);
+}
+
+.controls {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.controls .options {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
