@@ -55,11 +55,11 @@ For our purposes though, we don't need to get into the weeds of how Bézier curv
 
 ## The Control Points
 
-A cubic bézier gives you four numbers, x1, y1, x2, and y2. The x values represent time, while the y values represent progress. Together they define how an animation accelerates and decelerates over its duration.
+A cubic bézier gives you four numbers, `x1`, `y1`, `x2`, and `y2`. The x values represent time, while the y values represent progress. Together they define how an animation accelerates and decelerates over its duration.
 
 How I like to imagine them is that they are two moments in time, the acceleration and deceleration phases of the animation.
 
-### Acceleration - (x1,y1)
+### Acceleration - `(x1,y1)`
 
 The first control point affects how motion begins. This is where responsiveness is decided. 
 
@@ -67,7 +67,7 @@ Lower y values ease into motion more gradually, which can make interactions feel
 
 Raising the first y value causes progress to ramp up earlier. The animation starts moving almost immediately, which reads as responsiveness. This is especially important for direct feedback like presses, taps, and hover states, where any delay is felt instantly.
 
-### Deceleration - (x2, y2)
+### Deceleration - `(x2, y2)`
 
 The second control point shapes how motion comes to rest, and this is where most of the perceived smoothness lives. 
 

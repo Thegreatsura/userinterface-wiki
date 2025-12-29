@@ -10,7 +10,7 @@
   height: 128px;
   aspect-ratio: 2 / 3;
   overflow: hidden;
-  background-color: var(--magnet-bg);
+  background: var(--magnet-bg);
   border-radius: 8px;
   box-shadow:
     0 0 0 0.5px rgba(0, 0, 0, 0.25),
@@ -70,15 +70,15 @@
 }
 
 .browser .tab-bar .buttons > :nth-child(1) {
-  background-color: var(--green-9);
+  background: var(--green-9);
 }
 
 .browser .tab-bar .buttons > :nth-child(2) {
-  background-color: var(--amber-9);
+  background: var(--amber-9);
 }
 
 .browser .tab-bar .buttons > :nth-child(3) {
-  background-color: var(--red-9);
+  background: var(--red-9);
 }
 
 .browser .tab-bar .tab-container {

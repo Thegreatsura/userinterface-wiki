@@ -1,14 +1,14 @@
 "use client";
 
-import { Menu } from "@base-ui/react/menu";
 import { Slider } from "@base-ui/react/slider";
 import { FloatingPortal as Portal } from "@floating-ui/react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback } from "react";
 import { Button } from "@/components/button";
+import { Menu } from "@/components/menu";
 import { Shortcut } from "@/components/shortcut";
 import {
-  Checkmark1Icon,
+  Checkmark2SmallIcon,
   FastForwardIcon,
   PauseIcon,
   PlayIcon,
@@ -132,70 +132,54 @@ function SettingsMenu(props: SettingsMenuProps) {
       <Shortcut shortcut={{ label: "Settings" }}>
         <Menu.Trigger
           render={
-            <Button
-              variant="ghost"
-              className={styles.button}
-              aria-label="Settings"
-            >
+            <Button variant="ghost" className={styles.button}>
               <VoiceSettingsIcon size={ICON_SIZE.large} />
             </Button>
           }
         />
       </Shortcut>
       <Menu.Portal>
-        <Menu.Positioner
-          className={styles.positioner}
-          sideOffset={16}
-          align="end"
-          side="top"
-        >
-          <Menu.Popup className={styles.menu}>
+        <Menu.Positioner sideOffset={16} align="end" side="top">
+          <Menu.Popup>
             <Menu.CheckboxItem
               checked={props.autoScroll}
               onCheckedChange={props.onAutoScrollChange}
-              className={styles.item}
             >
-              Auto-scroll
+              Track Voice Position
               <Menu.CheckboxItemIndicator
-                className={styles.check}
                 keepMounted
                 render={
                   <AnimatePresence initial={false}>
                     {props.autoScroll && (
                       <motion.div key="auto-scroll" {...ICON_TRANSITION}>
-                        <Checkmark1Icon size={16} />
+                        <Checkmark2SmallIcon size={18} />
                       </motion.div>
                     )}
                   </AnimatePresence>
                 }
               />
             </Menu.CheckboxItem>
-
             <Menu.CheckboxItem
               checked={props.isLooping}
               onCheckedChange={props.onLoopChange}
-              className={styles.item}
             >
-              Loop
+              Loop Audio
               <Menu.CheckboxItemIndicator
-                className={styles.check}
                 keepMounted
                 render={
                   <AnimatePresence initial={false}>
                     {props.isLooping && (
-                      <motion.div key="loop" {...ICON_TRANSITION}>
-                        <Checkmark1Icon size={16} />
+                      <motion.div key="looping" {...ICON_TRANSITION}>
+                        <Checkmark2SmallIcon size={18} />
                       </motion.div>
                     )}
                   </AnimatePresence>
                 }
               />
             </Menu.CheckboxItem>
-
-            <Menu.Separator className={styles.separator} />
-
-            <Menu.Group className={styles.group}>
-              <Menu.GroupLabel className={styles.label}>Speed</Menu.GroupLabel>
+            <Menu.Separator />
+            <Menu.Group>
+              <Menu.GroupLabel>Speed</Menu.GroupLabel>
               <Menu.RadioGroup value={props.playbackRate.toString()}>
                 {PLAYBACK_RATES.map((rate) => (
                   <Menu.RadioItem
@@ -203,20 +187,18 @@ function SettingsMenu(props: SettingsMenuProps) {
                     value={rate.toString()}
                     closeOnClick={false}
                     onClick={() => props.onPlaybackRateChange(rate)}
-                    className={styles.item}
                   >
-                    <span>{rate}×</span>
+                    <span>{rate}</span>
                     <Menu.RadioItemIndicator
-                      className={styles.check}
                       keepMounted
                       render={
                         <AnimatePresence initial={false}>
                           {props.playbackRate === rate && (
                             <motion.div
-                              key={`speed-${rate}`}
+                              key={`playback-rate-${rate}`}
                               {...ICON_TRANSITION}
                             >
-                              <Checkmark1Icon size={16} />
+                              <Checkmark2SmallIcon size={18} />
                             </motion.div>
                           )}
                         </AnimatePresence>
@@ -226,14 +208,8 @@ function SettingsMenu(props: SettingsMenuProps) {
                 ))}
               </Menu.RadioGroup>
             </Menu.Group>
-
-            <Menu.Separator className={styles.separator} />
-
-            <Menu.Item
-              className={styles.item}
-              onClick={props.onDownload}
-              disabled={!props.canDownload}
-            >
+            <Menu.Separator />
+            <Menu.Item onClick={props.onDownload} disabled={!props.canDownload}>
               Download Audio
             </Menu.Item>
           </Menu.Popup>
@@ -307,13 +283,20 @@ export function MediaPlayer({ className }: MediaPlayerProps) {
     <Portal>
       <motion.div
         className={className ?? styles.player}
-        initial={{ y: 100, opacity: 0 }}
-        exit={{ y: 100, opacity: 0 }}
+        initial={{
+          opacity: 0,
+        }}
+        exit={{
+          opacity: 0,
+        }}
         animate={{
-          y: isPlayerVisible ? 0 : 100,
+          filter: isPlayerVisible ? "none" : "blur(8px)",
           opacity: isPlayerVisible ? 1 : 0,
         }}
-        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+        transition={{
+          duration: 0.4,
+          ease: [0.25, 0.1, 0.25, 1],
+        }}
       >
         <PlayerBackground />
         <div className={styles["player-controls"]}>

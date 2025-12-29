@@ -1,4 +1,8 @@
-@import url(./theme/index.css);
+@import url(./styles.mdx.css);
+@import url(./styles.radix.css);
+@import url(./styles.reset.css);
+@import url(./styles.shadows.css);
+@import url(./styles.typography.css);
 
 :root {
   --prose-block-spacing-small: 8px;

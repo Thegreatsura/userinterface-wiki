@@ -217,7 +217,6 @@ export * from "./interface-general/lightbulb-glow";
 export * from "./interface-general/loader";
 export * from "./interface-general/loading-circle";
 export * from "./interface-general/magnifying-glass";
-export * from "./interface-general/magnifying-glass-2";
 export * from "./interface-general/math-basic";
 export * from "./interface-general/math-equals";
 export * from "./interface-general/math-equals-circle";

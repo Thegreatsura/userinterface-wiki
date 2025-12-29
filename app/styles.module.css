@@ -1,25 +1,9 @@
-.root {
-  width: 100%;
-  max-width: var(--page-max-width);
-  padding-right: var(--page-padding-right);
-  padding-left: var(--page-padding-left);
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.main {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-height: calc(100 * var(--dvh));
-}
-
 html {
   scrollbar-width: none;
 
   ::selection {
     color: var(--gray-1);
-    background-color: var(--gray-12);
+    background: var(--gray-12);
   }
 
   &::-webkit-scrollbar {
@@ -29,9 +13,30 @@ html {
 
 body {
   font-family: var(--font-family-display);
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  line-height: 24px;
   color: var(--gray-12);
+  letter-spacing: var(--font-letter-spacing-14px);
   text-wrap: pretty;
-  background-color: var(--gray-2);
+  background: var(--gray-2);
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: calc(100 * var(--dvh));
+  isolation: isolate;
+}
+
+.root {
+  width: 100%;
+  max-width: var(--page-max-width);
+  padding-right: var(--page-padding-right);
+  padding-left: var(--page-padding-left);
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .skip {
@@ -41,10 +46,10 @@ body {
   z-index: 100;
   padding: 12px 24px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--gray-1);
   text-decoration: none;
-  background-color: var(--gray-12);
+  background: var(--gray-12);
   border-radius: 8px;
   transform: translateX(-50%);
   transition: top 0.2s ease;

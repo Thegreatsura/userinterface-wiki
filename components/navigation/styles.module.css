@@ -59,7 +59,7 @@
   font-family: var(--font-family-display);
   font-size: 14px;
   font-weight: var(--font-weight-medium);
-  letter-spacing: var(--font-inter-letter-spacing-14px);
+  letter-spacing: var(--font-letter-spacing-14px);
 }
 
 .logo:hover,

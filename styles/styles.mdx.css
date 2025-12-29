@@ -44,28 +44,28 @@
     margin-top: calc(var(--prose-block-spacing) * 3);
     margin-bottom: var(--prose-block-spacing);
     font-size: 20px;
-    letter-spacing: var(--font-inter-letter-spacing-20px);
+    letter-spacing: var(--font-letter-spacing-20px);
   }
 
   h2[data-prose-type="heading"] {
     margin-top: calc(var(--prose-block-spacing) * 2);
     margin-bottom: var(--prose-block-spacing);
     font-size: 18px;
-    letter-spacing: var(--font-inter-letter-spacing-18px);
+    letter-spacing: var(--font-letter-spacing-18px);
   }
 
   h3[data-prose-type="heading"] {
     margin-top: calc(var(--prose-block-spacing) * 1.5);
     margin-bottom: var(--prose-block-spacing-small);
     font-size: 16px;
-    letter-spacing: var(--font-inter-letter-spacing-16px);
+    letter-spacing: var(--font-letter-spacing-16px);
   }
 
   h4[data-prose-type="heading"] {
     margin-top: var(--prose-block-spacing-large);
     margin-bottom: var(--prose-block-spacing-small);
     font-size: 14px;
-    letter-spacing: var(--font-inter-letter-spacing-14px);
+    letter-spacing: var(--font-letter-spacing-14px);
   }
 
   [data-prose-type="text"] {
@@ -76,7 +76,7 @@
     font-weight: var(--font-weight-normal);
     line-height: 24px;
     color: var(--gray-11);
-    letter-spacing: var(--font-inter-letter-spacing-14px);
+    letter-spacing: var(--font-letter-spacing-14px);
     overflow-wrap: break-word;
     scroll-margin-top: var(--prose-block-spacing);
     isolation: isolate;
@@ -174,7 +174,7 @@
     min-width: var(--prose-list-inset);
     font-variant-numeric: tabular-nums;
     text-align: end;
-    letter-spacing: var(--font-inter-letter-spacing-14px);
+    letter-spacing: var(--font-letter-spacing-14px);
   }
 
   ol[data-prose-type="list"]:not([data-footnotes] *)
@@ -212,7 +212,7 @@
     font-weight: var(--font-weight-normal);
     line-height: 150%;
     color: var(--gray-8);
-    letter-spacing: var(--font-inter-letter-spacing-12px);
+    letter-spacing: var(--font-letter-spacing-12px);
     overflow-wrap: break-word;
     scroll-margin-top: var(--prose-block-spacing);
   }
@@ -296,7 +296,7 @@
     background: transparent;
     border-radius: 1rem;
     transition:
-      background-color 200ms ease-out,
+      background 200ms ease-out,
       box-shadow 200ms ease-out;
   }
 
@@ -383,7 +383,7 @@
     line-height: 24px;
     color: var(--gray-11);
     text-align: center;
-    letter-spacing: var(--font-inter-letter-spacing-14px);
+    letter-spacing: var(--font-letter-spacing-14px);
   }
 
   [data-prose-type="figure"] [data-prose-type="figcaption"] {
@@ -426,7 +426,7 @@
     overflow-x: auto;
     font-size: 15px;
     font-variant-numeric: tabular-nums;
-    letter-spacing: var(--font-inter-letter-spacing-14px);
+    letter-spacing: var(--font-letter-spacing-14px);
     border-spacing: 0;
     border-collapse: collapse;
     scroll-margin-top: var(--prose-block-spacing);
@@ -446,11 +446,11 @@
 
   th {
     padding: var(--table-cell-padding);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     line-height: 150%;
     color: var(--gray-12);
     text-align: left;
-    letter-spacing: var(--font-inter-letter-spacing-14px);
+    letter-spacing: var(--font-letter-spacing-14px);
   }
 
   tbody tr {
@@ -496,7 +496,7 @@
       calc(-1 * var(--prose-block-spacing)) var(--prose-block-spacing);
     font-family: var(--font-family-monospace);
     font-size: 13px;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     color: var(--gray-11);
     content: attr(title);
     border-bottom: 1px solid var(--gray-a4);
@@ -518,7 +518,7 @@
     padding: 1px 4px;
     font-family: var(--font-family-monospace);
     font-size: 13px;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     line-height: 1.3;
     color: var(--gray-12);
     background: var(--gray-4);

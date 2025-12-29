@@ -27,7 +27,7 @@
 .trigger .swatch {
   width: 18px;
   height: 18px;
-  background-color: var(--hex);
+  background: var(--hex);
   border-radius: 4px;
 }
 
@@ -36,14 +36,14 @@
   font-size: 14px;
   font-weight: var(--font-weight-medium);
   color: var(--gray-12);
-  letter-spacing: var(--font-inter-letter-spacing-14px);
+  letter-spacing: var(--font-letter-spacing-14px);
 }
 
 .popup {
   position: relative;
   padding-block: 12px;
   padding-inline: 16px;
-  background-color: var(--gray-1);
+  background: var(--gray-1);
   border-radius: 8px;
   box-shadow:
     lch(0 0 0 / 0.188) 0px 6px 18px,
@@ -76,28 +76,28 @@
   display: block;
   width: 48px;
   height: 48px;
-  background-color: var(--hex);
+  background: var(--hex);
   border-radius: 100px;
 }
 
 .popup .title {
   font-size: 14px;
   font-weight: var(--font-weight-medium);
-  letter-spacing: var(--font-inter-letter-spacing-14px);
+  letter-spacing: var(--font-letter-spacing-14px);
 }
 
 .popup .title .text .name {
   font-size: 14px;
   font-weight: var(--font-weight-medium);
   color: var(--gray-11);
-  letter-spacing: var(--font-inter-letter-spacing-14px);
+  letter-spacing: var(--font-letter-spacing-14px);
 }
 
 .popup .divider {
   width: 100%;
   height: 1px;
   margin: 12px 0;
-  background-color: var(--gray-4);
+  background: var(--gray-4);
 }
 
 .popup .description {
@@ -106,7 +106,7 @@
   gap: 8px 16px;
   font-size: 14px;
   color: var(--gray-11);
-  letter-spacing: var(--font-inter-letter-spacing-14px);
+  letter-spacing: var(--font-letter-spacing-14px);
 }
 
 .popup .description span:nth-child(2n + 1) {
@@ -147,7 +147,7 @@
   width: 100%;
   height: 100%;
   content: "";
-  background-color: var(--gray-4);
+  background: var(--gray-4);
   border-radius: 8px;
   opacity: 0;
   transform: scale(0.97);

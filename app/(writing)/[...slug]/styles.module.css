@@ -88,7 +88,7 @@
 
 .thumb {
   width: 100%;
-  background-color: var(--gray-a4);
+  background: var(--gray-a4);
   border-radius: inherit;
 }
 

@@ -1,6 +1,8 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import { DotGrid1X3HorizontalIcon, PauseIcon, PlayIcon } from "@/icons";
+
 import { useDocumentContext } from "./context";
 import styles from "./styles.module.css";
 import { formatDate } from "./utils";
@@ -8,6 +10,13 @@ import { formatDate } from "./utils";
 interface HeaderProps {
   className?: string;
 }
+
+export const transition = {
+  initial: { opacity: 0, scale: 0.8, filter: "blur(2px)" },
+  animate: { opacity: 1, scale: 1, filter: "blur(0px)" },
+  exit: { opacity: 0, scale: 0.8, filter: "blur(2px)" },
+  transition: { duration: 0.15 },
+} as const;
 
 export function Header({ className }: HeaderProps) {
   const {
@@ -56,11 +65,17 @@ export function Header({ className }: HeaderProps) {
             isPlaying && isPlayerVisible ? "Hide player" : "Show player"
           }
         >
-          {isPlaying && isPlayerVisible ? (
-            <PauseIcon size={16} />
-          ) : (
-            <PlayIcon size={16} />
-          )}
+          <AnimatePresence mode="wait" initial={false}>
+            {isPlaying && isPlayerVisible ? (
+              <motion.div {...transition} key="pause">
+                <PauseIcon size={16} />
+              </motion.div>
+            ) : (
+              <motion.div {...transition} key="play">
+                <PlayIcon size={16} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </button>
         <button type="button" className={styles.action}>
           <DotGrid1X3HorizontalIcon size={16} />

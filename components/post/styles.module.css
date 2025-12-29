@@ -20,7 +20,7 @@
   font-weight: var(--font-weight-medium);
   line-height: 24px;
   color: var(--gray-12);
-  letter-spacing: var(--font-inter-letter-spacing-16px);
+  letter-spacing: var(--font-letter-spacing-16px);
   transition: all 0.2s ease;
 }
 
@@ -36,7 +36,7 @@
   font-weight: var(--font-weight-normal);
   line-height: 24px;
   color: var(--gray-10);
-  letter-spacing: var(--font-inter-letter-spacing-14px);
+  letter-spacing: var(--font-letter-spacing-14px);
   transition: all 0.2s ease;
 }
 
@@ -46,7 +46,7 @@
   font-weight: var(--font-weight-normal);
   line-height: 24px;
   color: var(--gray-10);
-  letter-spacing: var(--font-inter-letter-spacing-14px);
+  letter-spacing: var(--font-letter-spacing-14px);
   transition: all 0.2s ease;
 }
 

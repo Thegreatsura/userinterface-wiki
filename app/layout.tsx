@@ -4,7 +4,7 @@ import Navigation from "@/components/navigation";
 import { Providers } from "@/components/providers";
 import { fonts } from "@/lib/config/fonts";
 
-import "@/styles/index.css";
+import "@/styles/styles.css";
 import styles from "./styles.module.css";
 
 const SITE_URL = "https://userinterface.wiki";
