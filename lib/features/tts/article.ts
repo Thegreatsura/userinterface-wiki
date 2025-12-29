@@ -36,9 +36,26 @@ function stripFrontmatter(value: string) {
 }
 
 function stripCodeSections(value: string) {
-  return value
-    .replace(/```[\s\S]*?```/g, "")
-    .replace(/~~~[\s\S]*?~~~/g, "")
-    .replace(/`[^`]*`/g, "")
-    .replace(/<pre[\s\S]*?<\/pre>/gi, "");
+  return (
+    value
+      // Code blocks
+      .replace(/```[\s\S]*?```/g, "")
+      .replace(/~~~[\s\S]*?~~~/g, "")
+      .replace(/`[^`]*`/g, "")
+      .replace(/<pre[\s\S]*?<\/pre>/gi, "")
+      // Footnote definitions at end of document (e.g., [^1]: Some text...)
+      .replace(/^\[\^[^\]]+\]:.*$/gm, "")
+      // Footnote markers in text (e.g., [^1], [^2])
+      .replace(/\[\^[^\]]+\]/g, "")
+      // JSX/HTML block elements with content (Figure, Caption, etc.)
+      .replace(/<(Figure|Caption|Callout|Note|Warning|Tip)[\s\S]*?<\/\1>/gi, "")
+      // Self-closing JSX components (e.g., <SquashStretch />, <Anticipation />)
+      .replace(/<[A-Z][a-zA-Z]*\s*\/>/g, "")
+      // Any remaining HTML/JSX tags (but keep their text content)
+      .replace(/<\/?[a-zA-Z][^>]*>/g, "")
+      // Markdown links: keep link text, remove URL (e.g., [text](url) → text)
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+      // Clean up multiple blank lines
+      .replace(/\n{3,}/g, "\n\n")
+  );
 }

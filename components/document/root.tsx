@@ -12,18 +12,21 @@ import { useShallow } from "zustand/react/shallow";
 import type { Author } from "@/lib/types";
 import { getGradientColors } from "@/lib/utils";
 import { DocumentContext } from "./context";
+import {
+  alignTimestamps,
+  clearHighlight,
+  collectWordPositions,
+  highlightWord,
+  scrollToWord,
+  type WordPosition,
+} from "./highlight";
 import { useAudioStore } from "./store";
 import type {
   DocumentContextValue,
   SerializablePageData,
   WordTimestamp,
 } from "./types";
-import {
-  alignTimeline,
-  collectSpans,
-  locateWordIndex,
-  type SpanMeta,
-} from "./utils";
+import { locateWordIndex } from "./utils";
 
 interface RootProps {
   data: SerializablePageData;
@@ -49,10 +52,9 @@ export function Root({
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const rafRef = useRef<number | null>(null);
-  const spansRef = useRef<SpanMeta[]>([]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const wordPositionsRef = useRef<WordPosition[]>([]);
   const mappingRef = useRef<number[]>([]);
-  const activeSpanRef = useRef<HTMLElement | null>(null);
-  const activeBlockRef = useRef<HTMLElement | null>(null);
   const lastWordIndexRef = useRef(-1);
   const isUserScrollingRef = useRef(false);
 
@@ -188,17 +190,19 @@ export function Root({
     rafRef.current = requestAnimationFrame(frame);
   }, [setCurrentTime]);
 
-  const clearActiveHighlight = useCallback(() => {
-    if (activeSpanRef.current) {
-      delete activeSpanRef.current.dataset.wordState;
-      activeSpanRef.current = null;
-    }
+  // Collect word positions for highlighting (only once per article)
+  useEffect(() => {
+    if (!slugKey || !containerRef.current) return;
 
-    if (activeBlockRef.current) {
-      delete activeBlockRef.current.dataset.wordBlockState;
-      activeBlockRef.current = null;
-    }
-  }, []);
+    // Defer collection to after MDX content has rendered
+    const timer = setTimeout(() => {
+      if (containerRef.current) {
+        wordPositionsRef.current = collectWordPositions(containerRef.current);
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [slugKey]);
 
   // Fetch narration
   useEffect(() => {
@@ -263,37 +267,14 @@ export function Root({
     setStatus,
   ]);
 
-  // Collect word spans
+  // Align timestamps to word positions when both are ready
   useEffect(() => {
-    if (!slugKey) return;
-
-    spansRef.current = collectSpans();
-    mappingRef.current = [];
-    activeSpanRef.current = null;
-    activeBlockRef.current = null;
-    lastWordIndexRef.current = -1;
-  }, [slugKey]);
-
-  // Align timestamps to DOM
-  useEffect(() => {
-    if (!timestamps.length || !spansRef.current.length) {
+    if (!timestamps.length || !wordPositionsRef.current.length) {
       mappingRef.current = [];
       return;
     }
 
-    const mapping = alignTimeline(timestamps, spansRef.current);
-    mappingRef.current = mapping;
-
-    for (const meta of spansRef.current) {
-      delete meta.element.dataset.wordTimeIndex;
-    }
-
-    mapping.forEach((spanIndex, wordIndex) => {
-      if (spanIndex < 0) return;
-      const meta = spansRef.current[spanIndex];
-      if (!meta) return;
-      meta.element.dataset.wordTimeIndex = String(wordIndex);
-    });
+    mappingRef.current = alignTimestamps(timestamps, wordPositionsRef.current);
   }, [timestamps]);
 
   // User scroll detection
@@ -355,14 +336,14 @@ export function Root({
       setCurrentTime(0);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       lastWordIndexRef.current = -1;
-      clearActiveHighlight();
+      clearHighlight();
     };
     const handlePause = () => {
       setIsPlaying(false);
       setAgentState(null);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       lastWordIndexRef.current = -1;
-      clearActiveHighlight();
+      clearHighlight();
     };
     const handlePlay = () => {
       setIsPlaying(true);
@@ -383,13 +364,7 @@ export function Root({
       audioRef.current = null;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [
-    clearActiveHighlight,
-    setAgentState,
-    setCurrentTime,
-    setDuration,
-    setIsPlaying,
-  ]);
+  }, [setAgentState, setCurrentTime, setDuration, setIsPlaying]);
 
   // Load audio source
   useEffect(() => {
@@ -629,46 +604,22 @@ export function Root({
     });
   }, [currentTime, duration]);
 
+  // Apply word highlight using a single <mark> element
   const applyHighlight = useCallback(
     (wordIndex: number) => {
-      const spanIndex = mappingRef.current[wordIndex];
-      if (typeof spanIndex !== "number" || spanIndex < 0) return;
-
-      const meta = spansRef.current[spanIndex];
-      if (!meta || activeSpanRef.current === meta.element) return;
-
-      clearActiveHighlight();
-      activeSpanRef.current = meta.element;
-      activeSpanRef.current.dataset.wordState = "active";
-
-      const block = meta.element.closest<HTMLElement>(
-        "p, li, blockquote, h1, h2, h3, h4, h5, h6",
-      );
-      if (block) {
-        activeBlockRef.current = block;
-        block.dataset.wordBlockState = "active";
-      }
+      highlightWord(wordPositionsRef.current, mappingRef.current, wordIndex);
 
       if (!autoScroll || isUserScrollingRef.current) return;
 
-      const rect = meta.element.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const topThreshold = viewportHeight * 0.35;
-      const bottomThreshold = viewportHeight * 0.65;
-      const outOfView =
-        rect.top < topThreshold || rect.bottom > bottomThreshold;
-
-      if (outOfView) {
-        // Mark as programmatic scroll to prevent triggering user scroll detection
-        isProgrammaticScrollRef.current = true;
-        meta.element.scrollIntoView({ behavior: "smooth", block: "center" });
-        // Reset after scroll animation completes
-        setTimeout(() => {
-          isProgrammaticScrollRef.current = false;
-        }, 500);
-      }
+      // Mark as programmatic scroll to prevent triggering user scroll detection
+      isProgrammaticScrollRef.current = true;
+      scrollToWord(wordPositionsRef.current, mappingRef.current, wordIndex);
+      // Reset after scroll animation completes
+      setTimeout(() => {
+        isProgrammaticScrollRef.current = false;
+      }, 500);
     },
-    [autoScroll, clearActiveHighlight],
+    [autoScroll],
   );
 
   // Word highlighting
@@ -686,25 +637,19 @@ export function Root({
     lastWordIndexRef.current = nextIndex;
 
     if (nextIndex === -1) {
-      clearActiveHighlight();
+      clearHighlight();
       return;
     }
 
     applyHighlight(nextIndex);
-  }, [
-    applyHighlight,
-    clearActiveHighlight,
-    currentTime,
-    isPlaying,
-    timestamps,
-  ]);
+  }, [applyHighlight, currentTime, isPlaying, timestamps]);
 
   // Clear highlight when paused
   useEffect(() => {
     if (isPlaying) return;
     lastWordIndexRef.current = -1;
-    clearActiveHighlight();
-  }, [clearActiveHighlight, isPlaying]);
+    clearHighlight();
+  }, [isPlaying]);
 
   // Sync playback rate
   useEffect(() => {
@@ -832,7 +777,9 @@ export function Root({
 
   return (
     <DocumentContext.Provider value={contextValue}>
-      <div className={className}>{children}</div>
+      <div ref={containerRef} className={className}>
+        {children}
+      </div>
     </DocumentContext.Provider>
   );
 }
