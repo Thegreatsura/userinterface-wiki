@@ -19,7 +19,7 @@ export function Timing() {
   const pantone = getNearestPantone(colorHex);
 
   const hex = chroma(pantone.hex).hex().toUpperCase();
-  const hsl = chroma(pantone.hex)
+  const _hsl = chroma(pantone.hex)
     .hsl()
     .map((v) => v.toFixed(2))
     .join(", ");
@@ -52,8 +52,6 @@ export function Timing() {
               <Popover.Description className={styles.description}>
                 <span>HEX</span>
                 <span>{hex}</span>
-                <span>HSL</span>
-                <span>{hsl}</span>
                 <span>LAB</span>
                 <span>{lab}</span>
               </Popover.Description>

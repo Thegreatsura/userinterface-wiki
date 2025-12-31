@@ -6,7 +6,7 @@ import { getNearestPantone } from "pantone-tcx";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./styles.module.css";
 
-const REFRESH_THRESHOLD = 80;
+const REFRESH_THRESHOLD = 50;
 const RANDOMIZE_INTERVAL = 100;
 
 export function Anticipation() {

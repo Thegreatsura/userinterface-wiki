@@ -45,10 +45,7 @@
   padding-inline: 16px;
   background: var(--gray-1);
   border-radius: 8px;
-  box-shadow:
-    lch(0 0 0 / 0.188) 0px 6px 18px,
-    lch(0 0 0 / 0.188) 0px 3px 9px,
-    var(--gray-4) 0px 0px 0px 1px;
+  box-shadow: var(--shadow-3);
   transform-origin: var(--transform-origin);
   transition: all 0.2s ease;
 }
@@ -81,16 +78,16 @@
 }
 
 .popup .title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: var(--font-weight-medium);
-  letter-spacing: var(--font-letter-spacing-14px);
+  letter-spacing: var(--font-letter-spacing-13px);
 }
 
 .popup .title .text .name {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: var(--font-weight-medium);
   color: var(--gray-11);
-  letter-spacing: var(--font-letter-spacing-14px);
+  letter-spacing: var(--font-letter-spacing-13px);
 }
 
 .popup .divider {
@@ -103,10 +100,10 @@
 .popup .description {
   display: grid;
   grid-template-columns: auto auto;
-  gap: 8px 16px;
-  font-size: 14px;
+  gap: 4px 12px;
+  font-size: 13px;
   color: var(--gray-11);
-  letter-spacing: var(--font-letter-spacing-14px);
+  letter-spacing: var(--font-letter-spacing-13px);
 }
 
 .popup .description span:nth-child(2n + 1) {

@@ -10,6 +10,8 @@ export function Appeal() {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollDelta = useRef(0);
+  const touchStartY = useRef(0);
+  const isSwiping = useRef(false);
 
   const prev = () => setIndex((i) => (i === 0 ? clips.length - 1 : i - 1));
   const next = () => setIndex((i) => (i === clips.length - 1 ? 0 : i + 1));
@@ -29,8 +31,41 @@ export function Appeal() {
       }
     };
 
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY.current = e.touches[0]?.clientY ?? 0;
+      isSwiping.current = true;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (!isSwiping.current) return;
+      e.preventDefault();
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (!isSwiping.current) return;
+
+      const touchEndY = e.changedTouches[0]?.clientY ?? 0;
+      const deltaY = touchStartY.current - touchEndY;
+
+      if (Math.abs(deltaY) > 30) {
+        if (deltaY > 0) next();
+        else prev();
+      }
+
+      isSwiping.current = false;
+    };
+
     container.addEventListener("wheel", onWheel, { passive: false });
-    return () => container.removeEventListener("wheel", onWheel);
+    container.addEventListener("touchstart", onTouchStart, { passive: true });
+    container.addEventListener("touchmove", onTouchMove, { passive: false });
+    container.addEventListener("touchend", onTouchEnd, { passive: true });
+
+    return () => {
+      container.removeEventListener("wheel", onWheel);
+      container.removeEventListener("touchstart", onTouchStart);
+      container.removeEventListener("touchmove", onTouchMove);
+      container.removeEventListener("touchend", onTouchEnd);
+    };
   });
 
   return (

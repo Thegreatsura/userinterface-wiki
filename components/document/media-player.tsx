@@ -26,14 +26,6 @@ import type { PlaybackRate } from "./types";
 import { formatTime } from "./utils";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PlayerBackground
-// ─────────────────────────────────────────────────────────────────────────────
-
-function PlayerBackground() {
-  return <div className={styles.background} />;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // VolumeControl
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -138,7 +130,7 @@ function SettingsMenu(props: SettingsMenuProps) {
           }
         />
       </Shortcut>
-      <Menu.Portal>
+      <Menu.Portal keepMounted>
         <Menu.Positioner sideOffset={16} align="end" side="top">
           <Menu.Popup>
             <Menu.CheckboxItem
@@ -298,7 +290,7 @@ export function MediaPlayer({ className }: MediaPlayerProps) {
           ease: [0.25, 0.1, 0.25, 1],
         }}
       >
-        <PlayerBackground />
+        <div className={styles.background} />
         <div className={styles["player-controls"]}>
           <div className={styles.details}>
             <div className={styles.cover}>
