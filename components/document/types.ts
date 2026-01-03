@@ -57,7 +57,6 @@ export interface DocumentContextValue {
   isMuted: boolean;
   isLooping: boolean;
   audioUrl: string | null;
-  selectedVoice: string;
   // Actions
   play: () => Promise<void>;
   pause: () => void;
@@ -73,7 +72,6 @@ export interface DocumentContextValue {
   setVolume: (volume: number) => void;
   toggleMute: () => void;
   setIsLooping: (looping: boolean) => void;
-  setSelectedVoice: (voice: string) => void;
   download: () => void;
 }
 

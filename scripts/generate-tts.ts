@@ -2,7 +2,14 @@
 
 /**
  * Pre-generates TTS audio for all documents during build.
+ * Uses ElevenLabs with a single voice for cost efficiency.
+ *
  * Run with: pnpm generate:tts
+ *
+ * Cost optimization:
+ * - Single voice: no multi-voice generation
+ * - Flash v2.5 model: 50% cheaper
+ * - Pre-generation only: no runtime costs
  */
 
 import { readdir } from "node:fs/promises";
@@ -17,12 +24,14 @@ import {
   readFromCache,
   writeToCache,
 } from "../lib/features/tts/cache";
-import { AVAILABLE_VOICES, CONTENT_DIR } from "../lib/features/tts/constants";
-import { synthesizeSpeech } from "../lib/features/tts/edgetts";
+import { CONTENT_DIR } from "../lib/features/tts/constants";
+import {
+  getQuotaInfo,
+  synthesizeSpeechElevenLabs,
+} from "../lib/features/tts/elevenlabs";
 
 interface GenerationResult {
   slug: string;
-  voice: string;
   status: "cached" | "generated" | "error";
   characters?: number;
   duration?: number;
@@ -56,45 +65,47 @@ async function getAllDocumentSlugs(): Promise<string[][]> {
 
 async function generateTTSForDocument(
   slugSegments: string[],
-  voice: string,
-  voiceLabel: string,
 ): Promise<GenerationResult> {
   const slug = slugSegments.join("/");
 
   try {
     const plainText = await getPlainArticleText(slugSegments);
     const characters = plainText.length;
-    const cacheKey = buildCacheKey(slugSegments, plainText, voice);
+    const cacheKey = buildCacheKey(slugSegments, plainText);
 
     const cached = await readFromCache(cacheKey);
     if (cached) {
-      return { slug, voice, status: "cached", characters };
+      return { slug, status: "cached", characters };
     }
 
-    process.stdout.write(pc.dim(`  generating ${slug} [${voiceLabel}]...`));
+    process.stdout.write(pc.dim(`  generating ${slug}...`));
     const startTime = performance.now();
 
-    const synthesized = await synthesizeSpeech(plainText, voice);
+    const synthesized = await synthesizeSpeechElevenLabs(plainText);
     await writeToCache(cacheKey, synthesized);
 
     const duration = performance.now() - startTime;
 
     process.stdout.write(
-      `\r  ${pc.green("✓")} ${slug} ${pc.dim(`[${voiceLabel}] ${formatChars(characters)} · ${formatDuration(duration)}`)}\n`,
+      `\r  ${pc.green("✓")} ${slug} ${pc.dim(`${formatChars(characters)} · ${formatDuration(duration)}`)}\n`,
     );
 
-    return { slug, voice, status: "generated", characters, duration };
+    return { slug, status: "generated", characters, duration };
   } catch (error) {
     console.log();
-    console.log(`  ${pc.red("✗")} ${slug} [${voiceLabel}]`);
+    console.log(`  ${pc.red("✗")} ${slug}`);
     console.log(
       pc.dim(`    ${error instanceof Error ? error.message : String(error)}`),
     );
-    return { slug, voice, status: "error", error };
+    return { slug, status: "error", error };
   }
 }
 
-function printSummary(results: GenerationResult[], totalTime: number) {
+function printSummary(
+  results: GenerationResult[],
+  totalTime: number,
+  totalCharsGenerated: number,
+) {
   const cached = results.filter((r) => r.status === "cached").length;
   const generated = results.filter((r) => r.status === "generated").length;
   const errors = results.filter((r) => r.status === "error").length;
@@ -108,42 +119,84 @@ function printSummary(results: GenerationResult[], totalTime: number) {
   if (errors > 0) parts.push(pc.red(`${errors} failed`));
   console.log(`  ${parts.join(pc.dim(" · "))}`);
 
+  if (totalCharsGenerated > 0) {
+    console.log(
+      pc.dim(`  ${formatChars(totalCharsGenerated)} characters used`),
+    );
+  }
   console.log(pc.dim(`  ${formatDuration(totalTime)}`));
   console.log();
 }
 
 async function main() {
   console.log();
-  console.log(pc.dim("  Generating TTS with Edge TTS..."));
-  console.log(
-    pc.dim(
-      `  ${AVAILABLE_VOICES.length} voices × ${(await getAllDocumentSlugs()).length} documents\n`,
-    ),
-  );
+  console.log(pc.dim("  Generating TTS with ElevenLabs..."));
 
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     console.log(pc.yellow("  ⚠ BLOB_READ_WRITE_TOKEN not set\n"));
     return;
   }
 
+  if (!process.env.ELEVENLABS_API_KEY) {
+    console.log(pc.yellow("  ⚠ ELEVENLABS_API_KEY not set\n"));
+    return;
+  }
+
+  if (!process.env.ELEVENLABS_VOICE_ID) {
+    console.log(pc.yellow("  ⚠ ELEVENLABS_VOICE_ID not set\n"));
+    return;
+  }
+
+  // Show current quota
+  try {
+    const quota = await getQuotaInfo();
+    console.log(
+      pc.dim(
+        `  Quota: ${formatChars(quota.remainingCharacters)} characters remaining`,
+      ),
+    );
+  } catch {
+    console.log(pc.dim("  (Could not fetch quota info)"));
+  }
+
   const slugs = await getAllDocumentSlugs();
+  console.log(pc.dim(`  ${slugs.length} documents to process\n`));
+
   const startTime = performance.now();
   const results: GenerationResult[] = [];
+  let totalCharsGenerated = 0;
 
-  for (const voiceConfig of AVAILABLE_VOICES) {
-    for (const slug of slugs) {
-      const result = await generateTTSForDocument(
-        slug,
-        voiceConfig.id,
-        voiceConfig.label,
-      );
-      results.push(result);
+  for (const slug of slugs) {
+    const result = await generateTTSForDocument(slug);
+    results.push(result);
+
+    if (result.status === "generated" && result.characters) {
+      totalCharsGenerated += result.characters;
+    }
+
+    // Small delay between API calls to be nice to the API
+    if (result.status === "generated") {
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
   }
 
   const totalTime = performance.now() - startTime;
 
-  printSummary(results, totalTime);
+  printSummary(results, totalTime, totalCharsGenerated);
+
+  // Show remaining quota after generation
+  if (totalCharsGenerated > 0) {
+    try {
+      const quota = await getQuotaInfo();
+      console.log(
+        pc.dim(
+          `  Remaining quota: ${formatChars(quota.remainingCharacters)} characters\n`,
+        ),
+      );
+    } catch {
+      // Ignore
+    }
+  }
 
   const errors = results.filter((r) => r.status === "error");
   if (errors.length > 0) {

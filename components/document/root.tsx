@@ -72,7 +72,6 @@ export function Root({
     volume,
     isMuted,
     isLooping,
-    selectedVoice,
     setAudioData,
     setStatus,
     setError,
@@ -86,7 +85,6 @@ export function Root({
     setVolume,
     toggleMute,
     setIsLooping,
-    setSelectedVoice,
     reset,
   } = useAudioStore(
     useShallow((state) => ({
@@ -103,7 +101,6 @@ export function Root({
       volume: state.volume,
       isMuted: state.isMuted,
       isLooping: state.isLooping,
-      selectedVoice: state.selectedVoice,
       setAudioData: state.setAudioData,
       setStatus: state.setStatus,
       setError: state.setError,
@@ -117,7 +114,6 @@ export function Root({
       setVolume: state.setVolume,
       toggleMute: state.toggleMute,
       setIsLooping: state.setIsLooping,
-      setSelectedVoice: state.setSelectedVoice,
       reset: state.reset,
     })),
   );
@@ -138,10 +134,6 @@ export function Root({
     "audio-looping",
     false,
   );
-  const [storedVoice, setStoredVoice] = useLocalStorage(
-    "audio-voice",
-    "en-US-GuyNeural",
-  );
 
   // Sync store from localStorage on mount (client-side only)
   // biome-ignore lint/correctness/useExhaustiveDependencies: Only run once on mount to avoid infinite loops with stored values
@@ -152,7 +144,6 @@ export function Root({
     setAutoScroll(storedAutoScroll);
     setPlaybackRate(storedPlaybackRate);
     setIsLooping(storedLooping);
-    setSelectedVoice(storedVoice);
     setPreferencesLoaded(true);
   }, [isClient]);
 
@@ -181,11 +172,6 @@ export function Root({
     if (!isClient) return;
     setStoredLooping(isLooping);
   }, [isClient, isLooping, setStoredLooping]);
-
-  useEffect(() => {
-    if (!isClient) return;
-    setStoredVoice(selectedVoice);
-  }, [isClient, selectedVoice, setStoredVoice]);
 
   // Reset state on mount
   useEffect(() => {
@@ -220,7 +206,7 @@ export function Root({
     return () => clearTimeout(timer);
   }, [slugKey]);
 
-  // Fetch narration (wait for preferences to be loaded to use correct voice)
+  // Fetch narration (wait for preferences to be loaded)
   useEffect(() => {
     if (!slugKey || !preferencesLoaded) return;
 
@@ -236,10 +222,11 @@ export function Root({
       lastWordIndexRef.current = -1;
 
       try {
+        // Simplified: no voice parameter, using single voice from server config
         const response = await fetch("/api/tts", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ slug: slugKey, voice: selectedVoice }),
+          body: JSON.stringify({ slug: slugKey }),
           signal: controller.signal,
         });
 
@@ -276,7 +263,6 @@ export function Root({
   }, [
     slugKey,
     preferencesLoaded,
-    selectedVoice,
     setAudioData,
     setError,
     setCurrentTime,
@@ -742,7 +728,6 @@ export function Root({
       isMuted,
       isLooping,
       audioUrl,
-      selectedVoice,
       play,
       pause,
       toggle,
@@ -757,7 +742,6 @@ export function Root({
       setVolume,
       toggleMute,
       setIsLooping,
-      setSelectedVoice,
       download,
     }),
     [
@@ -777,7 +761,6 @@ export function Root({
       isMuted,
       isLooping,
       audioUrl,
-      selectedVoice,
       play,
       pause,
       toggle,
@@ -792,7 +775,6 @@ export function Root({
       setVolume,
       toggleMute,
       setIsLooping,
-      setSelectedVoice,
       download,
     ],
   );

@@ -11,12 +11,12 @@ export interface CacheKey {
   hash: string;
 }
 
-export function buildCacheKey(
-  slugSegments: string[],
-  text: string,
-  voice: string,
-): CacheKey {
-  const contentHash = hashContent(`${text}::${voice}`);
+/**
+ * Build cache key from slug and content
+ * Simplified: no voice parameter since we use a single voice configured via env
+ */
+export function buildCacheKey(slugSegments: string[], text: string): CacheKey {
+  const contentHash = hashContent(text);
   const base = `${CACHE_PREFIX}/${slugSegments.join("__")}/${contentHash}`;
   return { base, hash: contentHash };
 }
