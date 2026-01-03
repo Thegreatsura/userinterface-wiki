@@ -18,6 +18,7 @@ import {
   VolumeHalfIcon,
   VolumeOffIcon,
 } from "@/icons";
+import { AVAILABLE_VOICES } from "@/lib/features/tts/constants";
 import { Orb } from "../orb";
 import { ICON_SIZE, ICON_TRANSITION, PLAYBACK_RATES } from "./constants";
 import { useDocumentContext } from "./context";
@@ -112,10 +113,12 @@ interface SettingsMenuProps {
   canDownload: boolean;
   isLooping: boolean;
   playbackRate: PlaybackRate;
+  selectedVoice: string;
   onAutoScrollChange: (value: boolean) => void;
   onDownload: () => void;
   onLoopChange: (looping: boolean) => void;
   onPlaybackRateChange: (rate: PlaybackRate) => void;
+  onVoiceChange: (voice: string) => void;
 }
 
 function SettingsMenu(props: SettingsMenuProps) {
@@ -201,6 +204,37 @@ function SettingsMenu(props: SettingsMenuProps) {
               </Menu.RadioGroup>
             </Menu.Group>
             <Menu.Separator />
+            <Menu.Group>
+              <Menu.GroupLabel>Voice</Menu.GroupLabel>
+              <Menu.RadioGroup value={props.selectedVoice}>
+                {AVAILABLE_VOICES.map((voice) => (
+                  <Menu.RadioItem
+                    key={voice.id}
+                    value={voice.id}
+                    closeOnClick={false}
+                    onClick={() => props.onVoiceChange(voice.id)}
+                  >
+                    <span>{voice.label}</span>
+                    <Menu.RadioItemIndicator
+                      keepMounted
+                      render={
+                        <AnimatePresence initial={false}>
+                          {props.selectedVoice === voice.id && (
+                            <motion.div
+                              key={`voice-${voice.id}`}
+                              {...ICON_TRANSITION}
+                            >
+                              <Checkmark2SmallIcon size={18} />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      }
+                    />
+                  </Menu.RadioItem>
+                ))}
+              </Menu.RadioGroup>
+            </Menu.Group>
+            <Menu.Separator />
             <Menu.Item onClick={props.onDownload} disabled={!props.canDownload}>
               Download Audio
             </Menu.Item>
@@ -244,6 +278,8 @@ export function MediaPlayer({ className }: MediaPlayerProps) {
     toggleMute,
     isLooping,
     setIsLooping,
+    selectedVoice,
+    setSelectedVoice,
     download,
     audioUrl,
   } = useDocumentContext("MediaPlayer");
@@ -381,10 +417,12 @@ export function MediaPlayer({ className }: MediaPlayerProps) {
               canDownload={!!audioUrl}
               isLooping={isLooping}
               playbackRate={playbackRate}
+              selectedVoice={selectedVoice}
               onAutoScrollChange={setAutoScroll}
               onDownload={download}
               onLoopChange={setIsLooping}
               onPlaybackRateChange={setPlaybackRate}
+              onVoiceChange={setSelectedVoice}
             />
           </div>
         </div>

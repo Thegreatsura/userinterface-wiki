@@ -1,7 +1,7 @@
 "use client";
 
 import { useMotionValueEvent, useScroll } from "motion/react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   useDebounceCallback,
   useEventListener,
@@ -72,6 +72,7 @@ export function Root({
     volume,
     isMuted,
     isLooping,
+    selectedVoice,
     setAudioData,
     setStatus,
     setError,
@@ -85,6 +86,7 @@ export function Root({
     setVolume,
     toggleMute,
     setIsLooping,
+    setSelectedVoice,
     reset,
   } = useAudioStore(
     useShallow((state) => ({
@@ -101,6 +103,7 @@ export function Root({
       volume: state.volume,
       isMuted: state.isMuted,
       isLooping: state.isLooping,
+      selectedVoice: state.selectedVoice,
       setAudioData: state.setAudioData,
       setStatus: state.setStatus,
       setError: state.setError,
@@ -114,12 +117,14 @@ export function Root({
       setVolume: state.setVolume,
       toggleMute: state.toggleMute,
       setIsLooping: state.setIsLooping,
+      setSelectedVoice: state.setSelectedVoice,
       reset: state.reset,
     })),
   );
 
   // Persisted audio preferences
   const isClient = useIsClient();
+  const [preferencesLoaded, setPreferencesLoaded] = useState(false);
   const [storedVolume, setStoredVolume] = useLocalStorage("audio-volume", 1);
   const [storedMuted, setStoredMuted] = useLocalStorage("audio-muted", false);
   const [storedAutoScroll, setStoredAutoScroll] = useLocalStorage(
@@ -133,6 +138,10 @@ export function Root({
     "audio-looping",
     false,
   );
+  const [storedVoice, setStoredVoice] = useLocalStorage(
+    "audio-voice",
+    "en-US-GuyNeural",
+  );
 
   // Sync store from localStorage on mount (client-side only)
   // biome-ignore lint/correctness/useExhaustiveDependencies: Only run once on mount to avoid infinite loops with stored values
@@ -143,6 +152,8 @@ export function Root({
     setAutoScroll(storedAutoScroll);
     setPlaybackRate(storedPlaybackRate);
     setIsLooping(storedLooping);
+    setSelectedVoice(storedVoice);
+    setPreferencesLoaded(true);
   }, [isClient]);
 
   // Persist preferences to localStorage when they change
@@ -170,6 +181,11 @@ export function Root({
     if (!isClient) return;
     setStoredLooping(isLooping);
   }, [isClient, isLooping, setStoredLooping]);
+
+  useEffect(() => {
+    if (!isClient) return;
+    setStoredVoice(selectedVoice);
+  }, [isClient, selectedVoice, setStoredVoice]);
 
   // Reset state on mount
   useEffect(() => {
@@ -204,9 +220,9 @@ export function Root({
     return () => clearTimeout(timer);
   }, [slugKey]);
 
-  // Fetch narration
+  // Fetch narration (wait for preferences to be loaded to use correct voice)
   useEffect(() => {
-    if (!slugKey) return;
+    if (!slugKey || !preferencesLoaded) return;
 
     const controller = new AbortController();
 
@@ -223,15 +239,15 @@ export function Root({
         const response = await fetch("/api/tts", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ slug: slugKey }),
+          body: JSON.stringify({ slug: slugKey, voice: selectedVoice }),
           signal: controller.signal,
         });
 
         if (!response.ok) {
-          const { error } = (await response.json().catch(() => ({}))) as {
-            error?: string;
-          };
-          throw new Error(error ?? "Unable to load narration");
+          // Narration not available - degrade gracefully
+          setAudioData({ audioUrl: null, timestamps: [] });
+          setStatus("unavailable");
+          return;
         }
 
         const pageData = (await response.json()) as {
@@ -259,6 +275,8 @@ export function Root({
     return () => controller.abort();
   }, [
     slugKey,
+    preferencesLoaded,
+    selectedVoice,
     setAudioData,
     setError,
     setCurrentTime,
@@ -724,6 +742,7 @@ export function Root({
       isMuted,
       isLooping,
       audioUrl,
+      selectedVoice,
       play,
       pause,
       toggle,
@@ -738,6 +757,7 @@ export function Root({
       setVolume,
       toggleMute,
       setIsLooping,
+      setSelectedVoice,
       download,
     }),
     [
@@ -757,6 +777,7 @@ export function Root({
       isMuted,
       isLooping,
       audioUrl,
+      selectedVoice,
       play,
       pause,
       toggle,
@@ -771,6 +792,7 @@ export function Root({
       setVolume,
       toggleMute,
       setIsLooping,
+      setSelectedVoice,
       download,
     ],
   );

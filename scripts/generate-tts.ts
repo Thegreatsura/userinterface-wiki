@@ -17,11 +17,12 @@ import {
   readFromCache,
   writeToCache,
 } from "../lib/features/tts/cache";
-import { CONTENT_DIR } from "../lib/features/tts/constants";
-import { resolveVoice, synthesizeSpeech } from "../lib/features/tts/edgetts";
+import { AVAILABLE_VOICES, CONTENT_DIR } from "../lib/features/tts/constants";
+import { synthesizeSpeech } from "../lib/features/tts/edgetts";
 
 interface GenerationResult {
   slug: string;
+  voice: string;
   status: "cached" | "generated" | "error";
   characters?: number;
   duration?: number;
@@ -55,9 +56,10 @@ async function getAllDocumentSlugs(): Promise<string[][]> {
 
 async function generateTTSForDocument(
   slugSegments: string[],
+  voice: string,
+  voiceLabel: string,
 ): Promise<GenerationResult> {
   const slug = slugSegments.join("/");
-  const voice = resolveVoice();
 
   try {
     const plainText = await getPlainArticleText(slugSegments);
@@ -66,10 +68,10 @@ async function generateTTSForDocument(
 
     const cached = await readFromCache(cacheKey);
     if (cached) {
-      return { slug, status: "cached", characters };
+      return { slug, voice, status: "cached", characters };
     }
 
-    process.stdout.write(pc.dim(`  generating ${slug}...`));
+    process.stdout.write(pc.dim(`  generating ${slug} [${voiceLabel}]...`));
     const startTime = performance.now();
 
     const synthesized = await synthesizeSpeech(plainText, voice);
@@ -78,17 +80,17 @@ async function generateTTSForDocument(
     const duration = performance.now() - startTime;
 
     process.stdout.write(
-      `\r  ${pc.green("✓")} ${slug} ${pc.dim(`${formatChars(characters)} · ${formatDuration(duration)}`)}\n`,
+      `\r  ${pc.green("✓")} ${slug} ${pc.dim(`[${voiceLabel}] ${formatChars(characters)} · ${formatDuration(duration)}`)}\n`,
     );
 
-    return { slug, status: "generated", characters, duration };
+    return { slug, voice, status: "generated", characters, duration };
   } catch (error) {
     console.log();
-    console.log(`  ${pc.red("✗")} ${slug}`);
+    console.log(`  ${pc.red("✗")} ${slug} [${voiceLabel}]`);
     console.log(
       pc.dim(`    ${error instanceof Error ? error.message : String(error)}`),
     );
-    return { slug, status: "error", error };
+    return { slug, voice, status: "error", error };
   }
 }
 
@@ -113,6 +115,11 @@ function printSummary(results: GenerationResult[], totalTime: number) {
 async function main() {
   console.log();
   console.log(pc.dim("  Generating TTS with Edge TTS..."));
+  console.log(
+    pc.dim(
+      `  ${AVAILABLE_VOICES.length} voices × ${(await getAllDocumentSlugs()).length} documents\n`,
+    ),
+  );
 
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     console.log(pc.yellow("  ⚠ BLOB_READ_WRITE_TOKEN not set\n"));
@@ -123,9 +130,15 @@ async function main() {
   const startTime = performance.now();
   const results: GenerationResult[] = [];
 
-  for (const slug of slugs) {
-    const result = await generateTTSForDocument(slug);
-    results.push(result);
+  for (const voiceConfig of AVAILABLE_VOICES) {
+    for (const slug of slugs) {
+      const result = await generateTTSForDocument(
+        slug,
+        voiceConfig.id,
+        voiceConfig.label,
+      );
+      results.push(result);
+    }
   }
 
   const totalTime = performance.now() - startTime;

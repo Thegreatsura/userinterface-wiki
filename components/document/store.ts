@@ -21,6 +21,7 @@ interface AudioState {
   volume: number;
   isMuted: boolean;
   isLooping: boolean;
+  selectedVoice: string;
 }
 
 interface AudioActions {
@@ -41,6 +42,7 @@ interface AudioActions {
   setIsMuted: (muted: boolean) => void;
   toggleMute: () => void;
   setIsLooping: (looping: boolean) => void;
+  setSelectedVoice: (voice: string) => void;
   reset: () => void;
 }
 
@@ -60,6 +62,7 @@ const createInitialState = (): AudioState => ({
   playbackRate: 1,
   volume: 1,
   isMuted: false,
+  selectedVoice: "en-US-GuyNeural",
   isLooping: false,
 });
 
@@ -83,6 +86,7 @@ export const useAudioStore = create<AudioStore>((set) => ({
   setVolume: (volume) =>
     set(() => ({ volume: Math.max(0, Math.min(1, volume)) })),
   setIsMuted: (muted) => set(() => ({ isMuted: muted })),
+  setSelectedVoice: (voice) => set(() => ({ selectedVoice: voice })),
   toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
   setIsLooping: (looping) => set(() => ({ isLooping: looping })),
   reset: () => set(() => createInitialState()),
