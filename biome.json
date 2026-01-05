@@ -14,8 +14,7 @@
       "!**/dist",
       "!**/node_modules/**/*",
       "!**/out",
-      "!dist",
-      "!!components/document/highlight.ts"
+      "!dist"
     ]
   },
   "formatter": {

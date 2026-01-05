@@ -28,7 +28,7 @@ export function ReadingProgress({ className }: ReadingProgressProps) {
 
   return (
     <div
-      className={className ?? styles["reading-progress"]}
+      className={className ?? styles.bar}
       style={{ "--progress": `${progress}%` } as React.CSSProperties}
       role="progressbar"
       aria-valuenow={progress}

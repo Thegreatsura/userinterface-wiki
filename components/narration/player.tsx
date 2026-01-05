@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCallback } from "react";
 import { Button } from "@/components/button";
 import { Menu } from "@/components/menu";
+import { Orb } from "@/components/orb";
 import { Shortcut } from "@/components/shortcut";
 import {
   Checkmark2SmallIcon,
@@ -18,16 +19,24 @@ import {
   VolumeHalfIcon,
   VolumeOffIcon,
 } from "@/icons";
-import { Orb } from "../orb";
-import { ICON_SIZE, ICON_TRANSITION, PLAYBACK_RATES } from "./constants";
-import { useDocumentContext } from "./context";
+import { formatTime } from "./functions";
+import { useNarrationContext } from "./provider";
 import styles from "./styles.module.css";
 import type { PlaybackRate } from "./types";
-import { formatTime } from "./utils";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// VolumeControl
-// ─────────────────────────────────────────────────────────────────────────────
+const PLAYBACK_RATES: PlaybackRate[] = [0.5, 0.75, 1, 1.25, 1.5, 2];
+
+const ICON_SIZE = {
+  large: 24,
+  small: 18,
+} as const;
+
+const ICON_TRANSITION = {
+  initial: { opacity: 0, scale: 0.8, filter: "blur(2px)" },
+  animate: { opacity: 1, scale: 1, filter: "blur(0px)" },
+  exit: { opacity: 0, scale: 0.8, filter: "blur(2px)" },
+  transition: { duration: 0.15 },
+} as const;
 
 interface VolumeControlProps {
   volume: number;
@@ -102,10 +111,6 @@ function VolumeControl({
     </Menu.Root>
   );
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// SettingsMenu
-// ─────────────────────────────────────────────────────────────────────────────
 
 interface SettingsMenuProps {
   autoScroll: boolean;
@@ -211,19 +216,16 @@ function SettingsMenu(props: SettingsMenuProps) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MediaPlayer
-// ─────────────────────────────────────────────────────────────────────────────
-
-interface MediaPlayerProps {
+interface PlayerProps {
   className?: string;
 }
 
-export function MediaPlayer({ className }: MediaPlayerProps) {
+export function Player({ className }: PlayerProps) {
   const {
-    page,
+    slug,
+    title,
+    authorName,
     colors,
-    author,
     status,
     isPlaying,
     isPlayerVisible,
@@ -246,7 +248,7 @@ export function MediaPlayer({ className }: MediaPlayerProps) {
     setIsLooping,
     download,
     audioUrl,
-  } = useDocumentContext("MediaPlayer");
+  } = useNarrationContext("Player");
 
   const progress =
     duration > 0
@@ -263,7 +265,7 @@ export function MediaPlayer({ className }: MediaPlayerProps) {
   );
 
   if (
-    !page.slugs?.length ||
+    !slug ||
     status === "idle" ||
     status === "loading" ||
     status === "error"
@@ -301,8 +303,8 @@ export function MediaPlayer({ className }: MediaPlayerProps) {
               />
             </div>
             <div className={styles.info}>
-              <div className={styles["player-title"]}>{page.data.title}</div>
-              <div className={styles.author}>{author?.name}</div>
+              <div className={styles["player-title"]}>{title}</div>
+              <div className={styles.author}>{authorName}</div>
             </div>
           </div>
           <div className={styles.progress}>

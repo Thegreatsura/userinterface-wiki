@@ -63,7 +63,7 @@ const createInitialState = (): AudioState => ({
   isLooping: false,
 });
 
-export const useAudioStore = create<AudioStore>((set) => ({
+export const useNarrationStore = create<AudioStore>((set) => ({
   ...createInitialState(),
   setAudioData: ({ audioUrl, timestamps }) =>
     set(() => ({ audioUrl, timestamps })),

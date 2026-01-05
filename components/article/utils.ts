@@ -1,0 +1,31 @@
+import type { Page } from "@/lib/source";
+
+export interface SerializablePageData {
+  slugs: string[];
+  url: string;
+  data: {
+    title: string;
+    description?: string;
+    author: string;
+    coauthors?: string[];
+    date: {
+      published: string;
+    };
+  };
+}
+
+export function toSerializablePageData(page: Page): SerializablePageData {
+  return {
+    slugs: page.slugs ?? [],
+    url: page.url,
+    data: {
+      title: page.data.title,
+      description: page.data.description,
+      author: page.data.author,
+      coauthors: page.data.coauthors,
+      date: {
+        published: page.data.date.published,
+      },
+    },
+  };
+}

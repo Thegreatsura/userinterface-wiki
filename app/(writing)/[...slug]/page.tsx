@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Document, toSerializablePageData } from "@/components/document";
+import { Article, toSerializablePageData } from "@/components/article";
+import { Narration } from "@/components/narration";
 import { PageTransition } from "@/components/page-transition";
 import { formatPageData, source } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
@@ -64,18 +65,24 @@ export default async function Page(props: {
     <PageTransition>
       <div className={styles.container}>
         <div className={styles.spacer} />
-        <Document.Root
+        <Article.Root
           data={pageData}
           author={author}
           coauthors={coauthors}
           className={styles.article}
         >
-          <Document.Header />
-          <Document.Content>
-            <MDX components={getMDXComponents()} />
-          </Document.Content>
-          <Document.MediaPlayer />
-        </Document.Root>
+          <Narration.Provider
+            slug={pageData.slugs.join("/")}
+            title={pageData.data.title}
+            authorName={author.name}
+          >
+            <Article.Header />
+            <Article.Content>
+              <MDX components={getMDXComponents()} />
+            </Article.Content>
+            <Narration.Player />
+          </Narration.Provider>
+        </Article.Root>
       </div>
     </PageTransition>
   );

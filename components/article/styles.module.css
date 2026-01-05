@@ -1,0 +1,39 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Article.Header
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+}
+
+.title {
+  font-family: var(--font-family-display);
+  font-size: 24px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 150%;
+  color: var(--foreground-primary);
+  letter-spacing: var(--font-letter-spacing-20px);
+}
+
+.description {
+  font-family: var(--font-family-display);
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  line-height: 150%;
+  color: var(--foreground-tertiary);
+  letter-spacing: var(--font-letter-spacing-14px);
+}
+
+.metadata {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  line-height: 24px;
+  color: var(--gray-11);
+  text-align: center;
+  letter-spacing: -0.09px;
+}

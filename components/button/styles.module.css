@@ -78,3 +78,42 @@
 .text:hover {
   color: var(--gray-a12);
 }
+
+/* Aspect */
+.square {
+  aspect-ratio: 1;
+  padding: 0;
+}
+
+.square.small {
+  width: 28px;
+}
+
+.square.medium {
+  width: 32px;
+}
+
+.square.large {
+  width: 40px;
+}
+
+/* Radius */
+.radius-none {
+  border-radius: 0;
+}
+
+.radius-small {
+  border-radius: 4px;
+}
+
+.radius-medium {
+  border-radius: 6px;
+}
+
+.radius-large {
+  border-radius: 8px;
+}
+
+.radius-full {
+  border-radius: 9999px;
+}

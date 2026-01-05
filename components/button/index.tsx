@@ -12,17 +12,28 @@ interface ButtonProps
   extends React.ComponentPropsWithoutRef<typeof MotionBaseButton> {
   variant?: "primary" | "secondary" | "ghost" | "text";
   size?: "small" | "medium" | "large";
+  aspect?: "default" | "square";
+  radius?: "none" | "small" | "medium" | "large" | "full";
 }
 
 function Button({
   className,
   variant = "primary",
   size = "medium",
+  aspect = "default",
+  radius,
   ...props
 }: ButtonProps) {
   return (
     <MotionBaseButton
-      className={clsx(styles.button, styles[size], styles[variant], className)}
+      className={clsx(
+        styles.button,
+        styles[size],
+        styles[variant],
+        aspect === "square" && styles.square,
+        radius && styles[`radius-${radius}`],
+        className,
+      )}
       {...props}
     />
   );
