@@ -31,6 +31,7 @@ export function Video({ src, title = "Video" }: VideoProps) {
 
   return (
     <div className={styles.wrapper}>
+      {/* biome-ignore lint/a11y/useMediaCaption: captions not available for embedded videos */}
       <video className={styles.video} controls>
         <source src={src} />
       </video>

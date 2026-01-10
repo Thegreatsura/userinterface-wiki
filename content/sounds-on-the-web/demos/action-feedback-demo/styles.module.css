@@ -1,19 +1,19 @@
 .container {
   display: flex;
   flex-direction: column;
-  align-items: flex-end; 
+  align-items: flex-end;
   justify-content: flex-end;
   width: 100%;
 }
 
 .actions {
-  padding: 12px;
   display: flex;
   gap: 12px;
   justify-content: center;
+  padding: 12px;
 
-  [data-button]{
-    width: 100%;  
+  [data-button] {
+    width: 100%;
   }
 }
 
@@ -22,8 +22,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 256px;
   width: 100%;
+  height: 256px;
 }
 
 .viewport {
@@ -36,22 +36,25 @@
 .toast {
   position: absolute;
   top: 0;
-  left: 0;
   right: 0;
-  margin: 0 auto;
-  box-sizing: border-box;
-  pointer-events: auto;
-  user-select: none;
-  cursor: default;
-  width: 256px;
+  left: 0;
   z-index: calc(1000 - var(--toast-index));
-  transform-origin: center center;
-  transform: translateY(calc(var(--toast-index) * 16px)) scale(calc(1 - var(--toast-index) * 0.05));
+  box-sizing: border-box;
+  width: 256px;
+  margin: 0 auto;
+  pointer-events: auto;
+  cursor: default;
+  user-select: none;
+  background: var(--gray-1);
+  border-radius: 12px;
+  box-shadow: var(--shadow-2);
   opacity: calc(1 - var(--toast-index) * 0.25);
+  transform: translateY(calc(var(--toast-index) * 16px))
+    scale(calc(1 - var(--toast-index) * 0.05));
+  transform-origin: center center;
   transition:
     transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.4s;  background: var(--gray-1);
-  box-shadow: var(--shadow-2);  border-radius: 12px;
+    opacity 0.4s;
 }
 
 .toast[data-starting-style] {
@@ -64,15 +67,9 @@
   transform: translateY(16px) scale(0.9);
 }
 
-
-
 .toast[data-limited] {
   opacity: 0;
 }
-
-
-
-
 
 .content {
   display: flex;
@@ -97,4 +94,3 @@
   font-weight: var(--font-weight-normal);
   letter-spacing: var(--font-letter-spacing-14px);
 }
-
