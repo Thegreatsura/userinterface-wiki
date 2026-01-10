@@ -1,0 +1,94 @@
+# A Living Manual for Better Interfaces
+
+I believe knowledge is best when shared. This wiki is a collection of articles, patterns, and best practices for designing and building user interfaces. It's a living manual that evolves with the field, incorporating new insights and techniques as they emerge.
+
+Feel free to explore the articles, contribute your own experiences, and help shape the future of user interface design.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- pnpm
+
+### Installation
+
+```bash
+pnpm install
+```
+
+### Development
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Build
+
+```bash
+pnpm build
+```
+
+## Tech Stack
+
+The backbone of this wiki is built with [Fumadocs](https://github.com/fuma-nama/fumadocs), it's a wonderful framework for creating documentation sites using Next.js and MDX. 
+
+Most if not all components are also built with [Base UI](https://base-ui.com/). This in my opinion is the best design system for building modern web applications with React.
+
+
+
+
+## Project Structure
+
+```
+app/              # Next.js app router pages
+components/       # React components
+content/          # MDX articles and demos
+icons/            # SVG icon components
+lib/              # Utilities, types, and stores
+public/           # Static assets (fonts, media)
+styles/           # Global CSS
+```
+
+## Writing Articles
+
+Articles live in `content/` as MDX files. Each article has its own folder with an `index.mdx` and optional `demos/` folder for interactive examples.
+
+```
+content/
+  my-article/
+    index.mdx
+    demos/
+      index.ts
+      my-demo/
+        index.tsx
+        styles.module.css
+```
+
+### Frontmatter
+
+```mdx
+---
+title: "Article Title"
+description: "A short description."
+date:
+  published: "2025-01-10"
+  modified: "2025-01-10"
+tags: ["design", "motion"]
+author: "raphael-salaja"
+icon: motion
+---
+```
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start development server |
+| `pnpm build` | Build for production |
+| `pnpm lint` | Run Biome linter |
+| `pnpm generate:tts` | Generate TTS audio for articles |
+| `pnpm convert:icons` | Convert SVGs to icon components |
+
