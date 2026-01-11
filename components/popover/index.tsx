@@ -5,11 +5,14 @@ import styles from "./styles.module.css";
 interface PopoverRootProps
   extends React.ComponentPropsWithoutRef<typeof BasePopover.Root> {}
 function PopoverRoot({ onOpenChange, ...props }: PopoverRootProps) {
-  function handleOpenChange(open: boolean) {
+  function handleOpenChange(
+    open: boolean,
+    eventDetails: BasePopover.Root.ChangeEventDetails,
+  ) {
     if (open) {
       sounds.pop();
     }
-    onOpenChange?.(open);
+    onOpenChange?.(open, eventDetails);
   }
 
   return <BasePopover.Root onOpenChange={handleOpenChange} {...props} />;
