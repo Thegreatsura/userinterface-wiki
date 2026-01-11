@@ -56,6 +56,7 @@ export function Provider({
 
   const {
     audioUrl,
+    alignment,
     status,
     isPlaying,
     isPlayerVisible,
@@ -77,6 +78,7 @@ export function Provider({
   } = useNarrationStore(
     useShallow((state) => ({
       audioUrl: state.audioUrl,
+      alignment: state.alignment,
       status: state.status,
       isPlaying: state.isPlaying,
       isPlayerVisible: state.isPlayerVisible,
@@ -162,6 +164,7 @@ export function Provider({
       isMuted,
       isLooping,
       audioUrl,
+      alignment,
       play,
       pause,
       toggle,
@@ -196,6 +199,7 @@ export function Provider({
       isMuted,
       isLooping,
       audioUrl,
+      alignment,
       play,
       pause,
       toggle,

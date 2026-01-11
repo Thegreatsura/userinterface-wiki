@@ -170,9 +170,9 @@ async function generateTTSForDocument(
         ),
       );
 
-      const synthesized = await synthesizeSpeech(paragraph.text);
+      const { audioBuffer, alignment } = await synthesizeSpeech(paragraph.text);
       const cacheKey = buildParagraphCacheKey(doc.slugSegments, paragraph.hash);
-      await writeParagraphToCache(cacheKey, synthesized);
+      await writeParagraphToCache(cacheKey, audioBuffer, alignment);
 
       charactersGenerated += paragraph.characters;
       paragraphsGenerated++;

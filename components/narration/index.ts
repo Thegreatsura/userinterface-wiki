@@ -2,10 +2,10 @@ export { Player } from "./player";
 export { Provider, useNarration } from "./provider";
 export type {
   AgentState,
+  Alignment,
   AudioStatus,
   NarrationContextValue,
   PlaybackRate,
-  WordTimestamp,
 } from "./types";
 
 import { Player } from "./player";

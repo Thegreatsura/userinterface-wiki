@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useNarrationStore } from "../store";
-import type { WordTimestamp } from "../types";
+import type { Alignment } from "../types";
 
 interface UseNarrationFetchOptions {
   slug: string;
@@ -43,10 +43,10 @@ export function useNarrationFetch({
       setIsPlaying(false);
       setCurrentTime(0);
       setDuration(0);
-      setAudioData({ audioUrl: null, timestamps: [] });
+      setAudioData(null, null);
 
       try {
-        const response = await fetch("/api/tts", {
+        const response = await fetch("/api/text-to-speech", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ slug }),
@@ -54,25 +54,22 @@ export function useNarrationFetch({
         });
 
         if (!response.ok) {
-          setAudioData({ audioUrl: null, timestamps: [] });
+          setAudioData(null, null);
           setStatus("unavailable");
           return;
         }
 
         const pageData = (await response.json()) as {
           audioUrl: string;
-          timestamps: WordTimestamp[];
+          alignment: Alignment;
         };
 
-        setAudioData({
-          audioUrl: pageData.audioUrl ?? null,
-          timestamps: pageData.timestamps ?? [],
-        });
+        setAudioData(pageData.audioUrl ?? null, pageData.alignment ?? null);
         setStatus("ready");
       } catch (error) {
         if (controller.signal.aborted) return;
         console.error("[narration]", error);
-        setAudioData({ audioUrl: null, timestamps: [] });
+        setAudioData(null, null);
         setIsPlaying(false);
         setError("Audio unavailable");
         setStatus("error");

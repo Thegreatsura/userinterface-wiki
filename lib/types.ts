@@ -22,13 +22,3 @@ export interface FormattedPage {
     published: string;
   };
 }
-
-/**
- * Word timestamp from TTS alignment
- */
-export interface WordTimestamp {
-  word: string;
-  start: number;
-  end: number;
-  normalized: string;
-}

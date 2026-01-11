@@ -9,11 +9,13 @@ export type AudioStatus =
 
 export type PlaybackRate = 0.5 | 0.75 | 1 | 1.25 | 1.5 | 2;
 
-export interface WordTimestamp {
-  word: string;
-  start: number;
-  end: number;
-  normalized: string;
+/**
+ * Character-level alignment data from ElevenLabs with-timestamps API
+ */
+export interface Alignment {
+  characters: string[];
+  character_start_times_seconds: number[];
+  character_end_times_seconds: number[];
 }
 
 export interface NarrationContextValue {
@@ -35,6 +37,7 @@ export interface NarrationContextValue {
   isMuted: boolean;
   isLooping: boolean;
   audioUrl: string | null;
+  alignment: Alignment | null;
 
   play: () => Promise<void>;
   pause: () => void;

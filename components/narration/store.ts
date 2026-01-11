@@ -1,14 +1,9 @@
 import { create } from "zustand";
-import type {
-  AgentState,
-  AudioStatus,
-  PlaybackRate,
-  WordTimestamp,
-} from "./types";
+import type { AgentState, Alignment, AudioStatus, PlaybackRate } from "./types";
 
 interface AudioState {
   audioUrl: string | null;
-  timestamps: WordTimestamp[];
+  alignment: Alignment | null;
   status: AudioStatus;
   errorMessage: string | null;
   isPlaying: boolean;
@@ -24,10 +19,7 @@ interface AudioState {
 }
 
 interface AudioActions {
-  setAudioData: (payload: {
-    audioUrl: string | null;
-    timestamps: WordTimestamp[];
-  }) => void;
+  setAudioData: (audioUrl: string | null, alignment: Alignment | null) => void;
   setStatus: (status: AudioStatus) => void;
   setError: (message: string | null) => void;
   setIsPlaying: (isPlaying: boolean) => void;
@@ -48,7 +40,7 @@ export type AudioStore = AudioState & AudioActions;
 
 const createInitialState = (): AudioState => ({
   audioUrl: null,
-  timestamps: [],
+  alignment: null,
   status: "idle",
   errorMessage: null,
   isPlaying: false,
@@ -65,8 +57,7 @@ const createInitialState = (): AudioState => ({
 
 export const useNarrationStore = create<AudioStore>((set) => ({
   ...createInitialState(),
-  setAudioData: ({ audioUrl, timestamps }) =>
-    set(() => ({ audioUrl, timestamps })),
+  setAudioData: (audioUrl, alignment) => set(() => ({ audioUrl, alignment })),
   setStatus: (status) =>
     set((state) => ({
       status,
