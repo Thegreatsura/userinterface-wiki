@@ -10,6 +10,7 @@ import {
   SquareBehindSquare1Icon,
 } from "@/icons";
 import { SITE_MANIFEST } from "@/lib/site";
+import { sounds } from "@/lib/sounds";
 import styles from "./styles.module.css";
 
 interface GlobalErrorProps {
@@ -24,6 +25,7 @@ export function GlobalError({ error, reset }: GlobalErrorProps) {
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(errorText);
+    sounds.success();
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

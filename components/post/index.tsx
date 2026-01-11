@@ -8,6 +8,7 @@ import {
   EssayPreview,
   MotionPreview,
 } from "@/components/previews";
+import { sounds } from "@/lib/sounds";
 import type { FormattedPage } from "@/lib/source";
 import styles from "./styles.module.css";
 
@@ -49,19 +50,12 @@ interface LinkProps {
 function PostLink({ children, className }: LinkProps) {
   const { url } = usePost();
 
-  function handleClick() {
-    const audio = new Audio("/sounds/clicks/1.wav");
-    audio.playbackRate = 0.9 + Math.random() * 0.2;
-    audio.volume = 0.4 + Math.random() * 0.2;
-    audio.play().catch(() => {});
-  }
-
   return (
     <Link
       data-post-link=""
       href={{ pathname: url }}
       className={className}
-      onClick={handleClick}
+      onClick={sounds.click}
     >
       {children}
     </Link>

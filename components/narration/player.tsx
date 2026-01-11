@@ -18,6 +18,7 @@ import {
   PlayIcon,
   RewindIcon,
 } from "@/icons";
+import { sounds } from "@/lib/sounds";
 import { formatTime } from "./functions";
 import { useNarrationContext } from "./provider";
 import styles from "./styles.module.css";
@@ -65,7 +66,10 @@ function SettingsMenu(props: SettingsMenuProps) {
                     key={rate}
                     value={rate.toString()}
                     closeOnClick={false}
-                    onClick={() => props.onPlaybackRateChange(rate)}
+                    onClick={() => {
+                      sounds.tick();
+                      props.onPlaybackRateChange(rate);
+                    }}
                   >
                     <span>{rate}</span>
                     <Menu.RadioItemIndicator
@@ -202,7 +206,11 @@ export function Player({ className }: PlayerProps) {
                 variant="ghost"
                 className={styles.button}
                 aspect="square"
-                onClick={download}
+                sound={false}
+                onClick={() => {
+                  sounds.confirm();
+                  download();
+                }}
                 disabled={!audioUrl}
                 aria-label="Download audio"
               >
@@ -215,7 +223,11 @@ export function Player({ className }: PlayerProps) {
                   variant="ghost"
                   aspect="square"
                   className={styles.button}
-                  onClick={() => skipBackward()}
+                  sound={false}
+                  onClick={() => {
+                    sounds.whoosh();
+                    skipBackward();
+                  }}
                   aria-label="Rewind 15 seconds"
                 >
                   <RewindIcon size={ICON_SIZE.small} />
@@ -231,7 +243,11 @@ export function Player({ className }: PlayerProps) {
                   variant="ghost"
                   className={styles.button}
                   aspect="square"
-                  onClick={toggle}
+                  sound={false}
+                  onClick={() => {
+                    sounds.toggle();
+                    toggle();
+                  }}
                   aria-label={isPlaying ? "Pause" : "Play"}
                 >
                   <AnimatePresence mode="wait" initial={false}>
@@ -252,7 +268,11 @@ export function Player({ className }: PlayerProps) {
                   variant="ghost"
                   aspect="square"
                   className={styles.button}
-                  onClick={() => skipForward()}
+                  sound={false}
+                  onClick={() => {
+                    sounds.whoosh();
+                    skipForward();
+                  }}
                   aria-label="Fast forward 15 seconds"
                 >
                   <FastForwardIcon size={ICON_SIZE.small} />

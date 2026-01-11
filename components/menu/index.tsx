@@ -1,10 +1,18 @@
 import { Menu as BaseMenu } from "@base-ui/react/menu";
+import { sounds } from "@/lib/sounds";
 import styles from "./styles.module.css";
 
 interface MenuRootProps
   extends React.ComponentPropsWithoutRef<typeof BaseMenu.Root> {}
-function MenuRoot({ ...props }: MenuRootProps) {
-  return <BaseMenu.Root {...props} />;
+function MenuRoot({ onOpenChange, ...props }: MenuRootProps) {
+  function handleOpenChange(open: boolean) {
+    if (open) {
+      sounds.pop();
+    }
+    onOpenChange?.(open);
+  }
+
+  return <BaseMenu.Root onOpenChange={handleOpenChange} {...props} />;
 }
 
 interface MenuTriggerProps

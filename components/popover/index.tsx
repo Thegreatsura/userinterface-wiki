@@ -1,10 +1,18 @@
 import { Popover as BasePopover } from "@base-ui/react/popover";
+import { sounds } from "@/lib/sounds";
 import styles from "./styles.module.css";
 
 interface PopoverRootProps
   extends React.ComponentPropsWithoutRef<typeof BasePopover.Root> {}
-function PopoverRoot({ ...props }: PopoverRootProps) {
-  return <BasePopover.Root {...props} />;
+function PopoverRoot({ onOpenChange, ...props }: PopoverRootProps) {
+  function handleOpenChange(open: boolean) {
+    if (open) {
+      sounds.pop();
+    }
+    onOpenChange?.(open);
+  }
+
+  return <BasePopover.Root onOpenChange={handleOpenChange} {...props} />;
 }
 
 interface PopoverTriggerProps
