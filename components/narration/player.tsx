@@ -17,8 +17,6 @@ import {
   PauseIcon,
   PlayIcon,
   RewindIcon,
-  ShareArrowDownIcon,
-  VoiceSettingsIcon,
 } from "@/icons";
 import { formatTime } from "./functions";
 import { useNarrationContext } from "./provider";
