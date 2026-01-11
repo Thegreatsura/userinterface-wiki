@@ -31,7 +31,9 @@ export function ButtonSoundDemo() {
   return (
     <div className={styles.container}>
       <div className={styles.column}>
-        <Button data-variant="silent">Click Me</Button>
+        <Button sound={false} data-variant="silent">
+          Click Me
+        </Button>
       </div>
 
       <div className={styles.divider} />
