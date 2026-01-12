@@ -7,7 +7,12 @@ import { Button } from "@/components/button";
 import { Menu } from "@/components/menu";
 import { useNarrationContext } from "@/components/narration/provider";
 import { Spinner } from "@/components/spinner";
-import { DotGrid1X3HorizontalIcon, PauseIcon, PlayIcon } from "@/icons";
+import {
+  DotGrid1X3HorizontalIcon,
+  PauseIcon,
+  PlayIcon,
+  VocalMicrophoneIcon,
+} from "@/icons";
 import type { Author } from "@/lib/authors";
 import { getGradientColors } from "@/lib/colors";
 import type { SerializablePageData } from "@/lib/page-data";
@@ -101,7 +106,7 @@ interface HeaderProps {
 
 function Header({ className }: HeaderProps) {
   const { page, author, coauthors } = useArticleContext("Header");
-  const { status, isPlaying, pause, showPlayer } =
+  const { status, isPlaying, isPlayerVisible, play, pause, showPlayer } =
     useNarrationContext("Header");
 
   const hasCoauthors = coauthors.length > 0;
@@ -109,16 +114,24 @@ function Header({ className }: HeaderProps) {
   const isReady = status === "ready";
 
   const handleClick = () => {
-    if (isPlaying) {
+    if (!isPlayerVisible) {
+      showPlayer();
+    } else if (isPlaying) {
       pause();
     } else {
-      showPlayer();
+      play();
     }
+  };
+
+  const getAriaLabel = () => {
+    if (isLoading) return "Loading";
+    if (!isPlayerVisible) return "Show player";
+    if (isPlaying) return "Pause";
+    return "Play";
   };
 
   const props = {
     button: {
-      variant: "ghost",
       aspect: "square",
       radius: "full",
       className: styles.button,
@@ -134,9 +147,7 @@ function Header({ className }: HeaderProps) {
             {...props.button}
             onClick={handleClick}
             disabled={!isReady}
-            aria-label={
-              isLoading ? "Loading" : isPlaying ? "Pause" : "Show player"
-            }
+            aria-label={getAriaLabel()}
           >
             <AnimatePresence mode="wait" initial={false}>
               {isLoading ? (
@@ -145,9 +156,13 @@ function Header({ className }: HeaderProps) {
                 <motion.div {...ICON_TRANSITION} key="pause">
                   <PauseIcon size={16} />
                 </motion.div>
-              ) : (
+              ) : isPlayerVisible ? (
                 <motion.div {...ICON_TRANSITION} key="play">
                   <PlayIcon size={16} />
+                </motion.div>
+              ) : (
+                <motion.div {...ICON_TRANSITION} key="podcast">
+                  <VocalMicrophoneIcon size={16} />
                 </motion.div>
               )}
             </AnimatePresence>
