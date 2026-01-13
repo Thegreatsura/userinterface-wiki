@@ -17,8 +17,8 @@
   @media (max-width: 480px) {
     display: flex;
     flex-direction: column;
-    height: fit-content;
     flex-direction: column-reverse;
+    height: fit-content;
   }
 }
 
