@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { SITE_MANIFEST } from "@/lib/site";
+import { QuoteRedirect } from "./redirect";
 
 interface QuotePageProps {
   params: Promise<{
@@ -50,12 +50,22 @@ export async function generateMetadata({
   };
 }
 
-export default async function QuotePage({ searchParams }: QuotePageProps) {
+export default async function QuotePage({
+  params,
+  searchParams,
+}: QuotePageProps) {
+  const { text, article } = await params;
   const { slug } = await searchParams;
 
-  if (slug) {
-    redirect(`/${slug}`);
-  }
+  const decodedText = Buffer.from(text, "base64url").toString("utf-8");
+  const decodedArticle = Buffer.from(article, "base64url").toString("utf-8");
+  const redirectUrl = slug ? `/${slug}` : "/";
 
-  redirect("/");
+  return (
+    <QuoteRedirect
+      redirectUrl={redirectUrl}
+      quoteText={decodedText}
+      articleTitle={decodedArticle}
+    />
+  );
 }
