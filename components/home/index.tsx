@@ -47,7 +47,7 @@ export function HomeLayout({ pages }: { pages: FormattedPage[] }) {
   return (
     <PageTransition>
       <div className={styles.header}>
-        <h1 className={styles.title}>A Living Manual for Better Interfaces</h1>
+        <h1 className={styles.title}>A Living Manual for Better Interfaces.</h1>
       </div>
 
       <div className={styles.container}>

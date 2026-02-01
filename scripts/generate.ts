@@ -1,9 +1,11 @@
+import { DemosGenerator } from "./generators/demos";
 import { IconsGenerator } from "./generators/icons";
 import { OpenGraphGenerator } from "./generators/opengraph";
 import { PlaygroundsGenerator } from "./generators/playgrounds";
 import { TextToSpeechGenerator } from "./generators/text-to-speech";
 
 const generators = {
+  demos: DemosGenerator,
   icons: IconsGenerator,
   opengraph: OpenGraphGenerator,
   playgrounds: PlaygroundsGenerator,
@@ -25,7 +27,7 @@ async function main() {
   const toRun =
     generatorNames.length > 0
       ? generatorNames
-      : (["icons", "opengraph", "playgrounds"] as GeneratorName[]);
+      : (["demos", "icons", "opengraph", "playgrounds"] as GeneratorName[]);
 
   // Validate generator names
   for (const name of toRun) {

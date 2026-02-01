@@ -1,11 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
+import { source } from "./source";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
 export interface DemoInfo {
   article: string;
+  articleTitle: string;
   slug: string;
+  title: string;
   path: string;
   url: string;
   key: string;
@@ -23,6 +26,9 @@ export function getAllDemos(): DemoInfo[] {
 
     if (!fs.existsSync(demosDir)) continue;
 
+    const page = source.getPage([article.name]);
+    const articleTitle = page?.data.title ?? formatDemoTitle(article.name);
+
     const demoFolders = fs.readdirSync(demosDir, { withFileTypes: true });
 
     for (const demoFolder of demoFolders) {
@@ -33,7 +39,9 @@ export function getAllDemos(): DemoInfo[] {
 
       demos.push({
         article: article.name,
+        articleTitle,
         slug: demoFolder.name,
+        title: formatDemoTitle(demoFolder.name),
         path: path.join(demosDir, demoFolder.name),
         url: `/demo/${demoFolder.name}`,
         key: `${article.name}/${demoFolder.name}`,

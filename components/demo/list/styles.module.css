@@ -6,9 +6,8 @@
 }
 
 .heading {
-  font-family: var(--font-family-display);
   font-size: 24px;
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
   line-height: 24px;
   color: var(--gray-12);
   letter-spacing: -0.47px;
@@ -73,15 +72,13 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .section-title {
-  font-family: var(--font-family-display);
-  font-size: 13px;
-  font-weight: var(--font-weight-medium);
+  font-size: 14px;
   color: var(--gray-10);
-  letter-spacing: var(--font-letter-spacing-13px);
+  letter-spacing: var(--font-letter-spacing-14px);
 }
 
 .items {
@@ -100,7 +97,6 @@
 .row {
   font-family: var(--font-family-display);
   font-size: 14px;
-  font-weight: var(--font-weight-normal);
   line-height: 24px;
   color: var(--gray-11);
   letter-spacing: var(--font-letter-spacing-14px);
