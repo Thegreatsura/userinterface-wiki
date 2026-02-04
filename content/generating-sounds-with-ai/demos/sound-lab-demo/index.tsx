@@ -1,6 +1,28 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import type { ComponentType } from "react";
+import { useCallback, useRef, useState } from "react";
+import useMeasure from "react-use-measure";
+import { ArrowDownIcon } from "@/icons/arrows/arrow-down";
+import { ArrowsRepeatIcon } from "@/icons/arrows/arrows-repeat";
+import { CursorClickIcon } from "@/icons/arrows/cursor-click";
+import { Checkmark1Icon } from "@/icons/interface-general/checkmark-1";
+import { CircleCheckIcon } from "@/icons/interface-general/circle-check";
+import { CircleDashedIcon } from "@/icons/interface-general/circle-dashed";
+import { CirclePlaceholderOnIcon } from "@/icons/interface-general/circle-placeholder-on";
+import { CircleXIcon } from "@/icons/interface-general/circle-x";
+import { ExclamationTriangleIcon } from "@/icons/interface-general/exclamation-triangle";
+import { FeatureIcon } from "@/icons/interface-general/feature";
+import { GaugeIcon } from "@/icons/interface-general/gauge";
+import { HeartIcon } from "@/icons/interface-general/heart";
+import { MinusSmallIcon } from "@/icons/interface-general/minus-small";
+import { StarIcon } from "@/icons/interface-general/star";
+import { TargetIcon } from "@/icons/interface-general/target";
+import { PlayIcon } from "@/icons/sound-and-music/play";
+import { RecordIcon } from "@/icons/sound-and-music/record";
+import { SoundFxIcon } from "@/icons/sound-and-music/sound-fx";
+import type { IconProps } from "@/icons/types";
 import {
   playClick,
   playDrop,
@@ -36,42 +58,76 @@ type FeelType =
   | "retro"
   | "crisp";
 
-const SOUND_CONFIG: Record<SoundType, { label: string; color: string }> = {
-  click: { label: "Click", color: "purple" },
-  pop: { label: "Pop", color: "pink" },
-  toggle: { label: "Toggle", color: "blue" },
-  tick: { label: "Tick", color: "cyan" },
-  drop: { label: "Drop", color: "teal" },
-  success: { label: "Success", color: "green" },
-  error: { label: "Error", color: "red" },
-  warning: { label: "Warning", color: "orange" },
-  startup: { label: "Startup", color: "yellow" },
+const SOUND_TYPES: SoundType[] = [
+  "click",
+  "pop",
+  "toggle",
+  "tick",
+  "drop",
+  "success",
+  "error",
+  "warning",
+  "startup",
+];
+
+type FeelParams = {
+  filterFreq: number;
+  q: number;
+  oscType: OscillatorType;
+  decayMult: number;
+  gainMult: number;
+  pitchMult: number;
 };
 
-const FEEL_LABELS: Record<FeelType, { label: string; description: string }> = {
-  soft: { label: "Soft", description: "Gentle, muted" },
-  aero: { label: "Aero", description: "Clean, modern" },
-  arcade: { label: "Arcade", description: "Retro, playful" },
-  organic: { label: "Organic", description: "Warm, natural" },
-  glass: { label: "Glass", description: "Crystalline, bright" },
-  industrial: { label: "Industrial", description: "Harsh, metallic" },
-  minimal: { label: "Minimal", description: "Subtle, quiet" },
-  retro: { label: "Retro", description: "Lo-fi, muffled" },
-  crisp: { label: "Crisp", description: "Clean, precise" },
-};
+type PlayFn = (
+  ctx: AudioContext,
+  t: number,
+  params: FeelParams,
+) => void;
 
-// Feel modifiers for each sound type
-const FEEL_PARAMS: Record<
-  FeelType,
-  {
-    filterFreq: number;
-    q: number;
-    oscType: OscillatorType;
-    decayMult: number;
-    gainMult: number;
-    pitchMult: number;
-  }
+const SOUND_CONFIG: Record<
+  SoundType,
+  { label: string; icon: ComponentType<IconProps>; play: PlayFn }
 > = {
+  click: { label: "Click", icon: CursorClickIcon, play: playClick },
+  pop: { label: "Pop", icon: CirclePlaceholderOnIcon, play: playPop },
+  toggle: { label: "Toggle", icon: ArrowsRepeatIcon, play: playToggle },
+  tick: { label: "Tick", icon: Checkmark1Icon, play: playTick },
+  drop: { label: "Drop", icon: ArrowDownIcon, play: playDrop },
+  success: { label: "Success", icon: CircleCheckIcon, play: playSuccess },
+  error: { label: "Error", icon: CircleXIcon, play: playError },
+  warning: { label: "Warning", icon: ExclamationTriangleIcon, play: playWarning },
+  startup: { label: "Startup", icon: PlayIcon, play: playStartup },
+};
+
+const FEEL_TYPES: FeelType[] = [
+  "soft",
+  "aero",
+  "arcade",
+  "organic",
+  "glass",
+  "industrial",
+  "minimal",
+  "retro",
+  "crisp",
+];
+
+const FEEL_CONFIG: Record<
+  FeelType,
+  { label: string; icon: ComponentType<IconProps>; color: string }
+> = {
+  soft: { label: "Soft", icon: HeartIcon, color: "pink" },
+  aero: { label: "Aero", icon: FeatureIcon, color: "blue" },
+  arcade: { label: "Arcade", icon: SoundFxIcon, color: "purple" },
+  organic: { label: "Organic", icon: CircleDashedIcon, color: "green" },
+  glass: { label: "Glass", icon: StarIcon, color: "cyan" },
+  industrial: { label: "Industrial", icon: GaugeIcon, color: "orange" },
+  minimal: { label: "Minimal", icon: MinusSmallIcon, color: "gray" },
+  retro: { label: "Retro", icon: RecordIcon, color: "amber" },
+  crisp: { label: "Crisp", icon: TargetIcon, color: "red" },
+};
+
+const FEEL_PARAMS: Record<FeelType, FeelParams> = {
   soft: {
     filterFreq: 2000,
     q: 1,
@@ -146,96 +202,195 @@ const FEEL_PARAMS: Record<
   },
 };
 
+const ICON_ANIMATION = {
+  initial: { opacity: 0, scale: 0.5, filter: "blur(4px)" },
+  animate: { opacity: 1, scale: 1, filter: "blur(0px)" },
+  exit: { opacity: 0, scale: 0.5, filter: "blur(4px)" },
+};
+
+const DOT_ANIMATION = {
+  initial: { opacity: 0, scale: 0.5 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.5 },
+};
+
+const LABEL_ANIMATION = {
+  initial: { opacity: 0, filter: "blur(1px)" },
+  animate: { opacity: 1, filter: "blur(0px)" },
+  exit: { opacity: 0, filter: "blur(1px)" },
+};
+
+const FADE_TRANSITION = { duration: 0.15 };
+const SPRING_TRANSITION = { type: "spring", stiffness: 400, damping: 25 } as const;
+const WIDTH_TRANSITION = { type: "spring", stiffness: 300, damping: 30 } as const;
+
 export function SoundLabDemo() {
   const [feel, setFeel] = useState<FeelType>("aero");
-  const [playingSound, setPlayingSound] = useState<SoundType | null>(null);
+  const [selectedSounds, setSelectedSounds] = useState<Set<SoundType>>(
+    () => new Set(["click", "pop", "success", "error"]),
+  );
+  const [currentIndex, setCurrentIndex] = useState(0);
   const ctxRef = useRef<AudioContext | null>(null);
+  const [ref, bounds] = useMeasure();
 
-  const getContext = () => {
+  const sequence = SOUND_TYPES.filter((sound) => selectedSounds.has(sound));
+  const safeIndex = sequence.length > 0 ? currentIndex % sequence.length : 0;
+  const currentSound = sequence[safeIndex] ?? "click";
+
+  const getContext = useCallback(() => {
     ctxRef.current?.close();
     ctxRef.current = new AudioContext();
     return ctxRef.current;
-  };
+  }, []);
 
-  const playSound = (sound: SoundType) => {
-    const ctx = getContext();
-    const t = ctx.currentTime;
-    const params = FEEL_PARAMS[feel];
+  const playSoundEffect = useCallback(
+    (sound: SoundType, feelOverride?: FeelType) => {
+      const ctx = getContext();
+      const params = FEEL_PARAMS[feelOverride ?? feel];
+      SOUND_CONFIG[sound].play(ctx, ctx.currentTime, params);
+    },
+    [feel, getContext],
+  );
 
-    setPlayingSound(sound);
+  const toggleSound = useCallback((sound: SoundType) => {
+    setSelectedSounds((prev) => {
+      const next = new Set(prev);
+      if (next.has(sound)) {
+        next.delete(sound);
+      } else {
+        next.add(sound);
+      }
+      return next;
+    });
+  }, []);
 
-    switch (sound) {
-      case "click":
-        playClick(ctx, t, params);
-        break;
-      case "pop":
-        playPop(ctx, t, params);
-        break;
-      case "toggle":
-        playToggle(ctx, t, params);
-        break;
-      case "tick":
-        playTick(ctx, t, params);
-        break;
-      case "drop":
-        playDrop(ctx, t, params);
-        break;
-      case "success":
-        playSuccess(ctx, t, params);
-        break;
-      case "error":
-        playError(ctx, t, params);
-        break;
-      case "warning":
-        playWarning(ctx, t, params);
-        break;
-      case "startup":
-        playStartup(ctx, t, params);
-        break;
-    }
+  const cycleAndPlay = useCallback(() => {
+    if (sequence.length === 0) return;
+    playSoundEffect(currentSound);
+    setCurrentIndex((prev) => prev + 1);
+  }, [sequence.length, currentSound, playSoundEffect]);
 
-    const duration =
-      sound === "startup" ? 700 : sound === "success" ? 400 : 200;
-    setTimeout(() => setPlayingSound(null), duration);
-  };
+  const handleFeelChange = useCallback(
+    (newFeel: FeelType) => {
+      setFeel(newFeel);
+      playSoundEffect("toggle", newFeel);
+    },
+    [playSoundEffect],
+  );
 
-  const handleFeelChange = (newFeel: FeelType) => {
-    setFeel(newFeel);
-    const ctx = getContext();
-    const t = ctx.currentTime;
-    const params = FEEL_PARAMS[newFeel];
-    playToggle(ctx, t, params);
-  };
+  const CurrentIcon = SOUND_CONFIG[currentSound].icon;
+  const currentColor = FEEL_CONFIG[feel].color;
+
+  const currentIconLabel = SOUND_CONFIG[currentSound].label;
+  const currentFeelLabel = FEEL_CONFIG[feel].label;
 
   return (
-    <div className={styles.container}>
-      <div className={styles.pads}>
-        {(Object.keys(SOUND_CONFIG) as SoundType[]).map((sound) => (
-          <button
-            key={sound}
-            type="button"
-            className={styles.pad}
-            data-color={SOUND_CONFIG[sound].color}
-            data-playing={playingSound === sound}
-            onClick={() => playSound(sound)}
-          >
-            {SOUND_CONFIG[sound].label}
-          </button>
-        ))}
-      </div>
+    <div className={styles.root} data-color={currentColor}>
+      <button
+        type="button"
+        className={styles.preview}
+        onClick={cycleAndPlay}
+        aria-label="Play next sound in sequence"
+      >
+        <div className={styles["preview-icon"]}>
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              key={currentSound}
+              initial={ICON_ANIMATION.initial}
+              animate={ICON_ANIMATION.animate}
+              exit={ICON_ANIMATION.exit}
+              transition={FADE_TRANSITION}
+            >
+              <CurrentIcon size={24} />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </button>
 
-      <div className={styles.feels}>
-        {(Object.keys(FEEL_LABELS) as FeelType[]).map((f) => (
-          <button
-            key={f}
-            type="button"
-            className={styles.feelButton}
-            data-active={feel === f}
-            onClick={() => handleFeelChange(f)}
+      <motion.div
+        className={styles["dots-container"]}
+        animate={{ width: bounds.width > 0 ? bounds.width : "auto" }}
+        transition={WIDTH_TRANSITION}
+      >
+        <div className={styles.dots} ref={ref}>
+          <AnimatePresence mode="popLayout">
+            {sequence.map((sound, index) => (
+              <motion.span
+                key={sound}
+                layout
+                className={styles.dot}
+                data-active={index === safeIndex}
+                initial={DOT_ANIMATION.initial}
+                animate={DOT_ANIMATION.animate}
+                exit={DOT_ANIMATION.exit}
+                transition={SPRING_TRANSITION}
+              />
+            ))}
+          </AnimatePresence>
+        </div>
+      </motion.div>
+
+      <div className={styles.options}>
+        <div className={styles.grid}>
+          {SOUND_TYPES.map((sound) => {
+            const { label, icon: Icon } = SOUND_CONFIG[sound];
+            return (
+              <button
+                key={sound}
+                type="button"
+                className={styles["icon-button"]}
+                data-active={selectedSounds.has(sound)}
+                onClick={() => toggleSound(sound)}
+                aria-label={label}
+                aria-pressed={selectedSounds.has(sound)}
+              >
+                <Icon size={16} />
+              </button>
+            );
+          })}
+
+          <motion.div
+            className={styles.current}
+            key={currentIconLabel}
+            initial={LABEL_ANIMATION.initial}
+            animate={LABEL_ANIMATION.animate}
+            exit={LABEL_ANIMATION.exit}
+            transition={FADE_TRANSITION}
           >
-            {FEEL_LABELS[f].label}
-          </button>
-        ))}
+            {currentIconLabel}
+          </motion.div>
+        </div>
+
+        <div className={styles.divider} />
+
+        <div className={styles.grid}>
+          {FEEL_TYPES.map((f) => {
+            const { label, icon: Icon } = FEEL_CONFIG[f];
+            return (
+              <button
+                key={f}
+                type="button"
+                className={styles["icon-button"]}
+                data-active={feel === f}
+                onClick={() => handleFeelChange(f)}
+                aria-label={label}
+              >
+                <Icon size={16} />
+              </button>
+            );
+          })}
+
+          <motion.div
+            className={styles.current}
+            key={currentFeelLabel}
+            initial={LABEL_ANIMATION.initial}
+            animate={LABEL_ANIMATION.animate}
+            exit={LABEL_ANIMATION.exit}
+            transition={FADE_TRANSITION}
+          >
+            {currentFeelLabel}
+          </motion.div>
+        </div>
       </div>
     </div>
   );

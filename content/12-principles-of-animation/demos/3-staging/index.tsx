@@ -160,7 +160,7 @@ export function Staging() {
 
   return (
     <div className={styles.root}>
-      <MotionConfig transition={{ type: "spring", bounce: 0, duration: 0.5 }}>
+      <MotionConfig transition={{ type: "spring", bounce: 0, duration: 0.35 }}>
         <Dialog.Root open={isOpen} onOpenChange={handleDialogChange}>
           <AnimatePresence initial={false} mode="popLayout">
             {!isOpen && (
@@ -171,7 +171,7 @@ export function Staging() {
                   <motion.div
                     className={styles.wallet}
                     layoutId={LAYOUT_ID.wallet}
-                    style={{ background: bg, width: 200 }}
+                    style={{ background: bg }}
                     whileHover={{ scale: 0.98, opacity: 0.8 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -226,7 +226,7 @@ export function Staging() {
                         layout
                         layoutId={LAYOUT_ID.bottomLeading}
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 0, filter: "blur(10px)" }}
+                        animate={{ opacity: 0, filter: "blur(12px)" }}
                         exit={{ opacity: 0 }}
                         style={{
                           display: "flex",
