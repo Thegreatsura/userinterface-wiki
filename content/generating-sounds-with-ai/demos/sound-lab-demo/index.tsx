@@ -79,11 +79,7 @@ type FeelParams = {
   pitchMult: number;
 };
 
-type PlayFn = (
-  ctx: AudioContext,
-  t: number,
-  params: FeelParams,
-) => void;
+type PlayFn = (ctx: AudioContext, t: number, params: FeelParams) => void;
 
 const SOUND_CONFIG: Record<
   SoundType,
@@ -96,7 +92,11 @@ const SOUND_CONFIG: Record<
   drop: { label: "Drop", icon: ArrowDownIcon, play: playDrop },
   success: { label: "Success", icon: CircleCheckIcon, play: playSuccess },
   error: { label: "Error", icon: CircleXIcon, play: playError },
-  warning: { label: "Warning", icon: ExclamationTriangleIcon, play: playWarning },
+  warning: {
+    label: "Warning",
+    icon: ExclamationTriangleIcon,
+    play: playWarning,
+  },
   startup: { label: "Startup", icon: PlayIcon, play: playStartup },
 };
 
@@ -221,8 +221,16 @@ const LABEL_ANIMATION = {
 };
 
 const FADE_TRANSITION = { duration: 0.15 };
-const SPRING_TRANSITION = { type: "spring", stiffness: 400, damping: 25 } as const;
-const WIDTH_TRANSITION = { type: "spring", stiffness: 300, damping: 30 } as const;
+const SPRING_TRANSITION = {
+  type: "spring",
+  stiffness: 400,
+  damping: 25,
+} as const;
+const WIDTH_TRANSITION = {
+  type: "spring",
+  stiffness: 300,
+  damping: 30,
+} as const;
 
 export function SoundLabDemo() {
   const [feel, setFeel] = useState<FeelType>("aero");
