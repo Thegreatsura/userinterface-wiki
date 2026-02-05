@@ -25,11 +25,11 @@ export async function generateMetadata({
   const ogImageUrl = `${SITE_MANIFEST.url}/api/quote/og?text=${text}&author=${author}&article=${article}`;
 
   return {
-    title: `"${decodedText.slice(0, 60)}${decodedText.length > 60 ? "…" : ""}" — ${decodedAuthor}`,
-    description: `From "${decodedArticle}" on ${SITE_MANIFEST.name}`,
+    title: decodedArticle,
+    description: `"${decodedText.slice(0, 100)}${decodedText.length > 100 ? "…" : ""}" — ${decodedAuthor}`,
     openGraph: {
-      title: `"${decodedText.slice(0, 60)}${decodedText.length > 60 ? "…" : ""}" — ${decodedAuthor}`,
-      description: `From "${decodedArticle}" on ${SITE_MANIFEST.name}`,
+      title: decodedArticle,
+      description: `"${decodedText.slice(0, 100)}${decodedText.length > 100 ? "…" : ""}" — ${decodedAuthor}`,
       images: [
         {
           url: ogImageUrl,
@@ -43,8 +43,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `"${decodedText.slice(0, 60)}${decodedText.length > 60 ? "…" : ""}" — ${decodedAuthor}`,
-      description: `From "${decodedArticle}" on ${SITE_MANIFEST.name}`,
+      title: decodedArticle,
+      description: `"${decodedText.slice(0, 100)}${decodedText.length > 100 ? "…" : ""}" — ${decodedAuthor}`,
       images: [ogImageUrl],
     },
   };
